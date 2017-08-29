@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <canvas id="canvas" width="1000" height="600" style="background-color: black"></canvas>
+
+    <script src="canteen.min.js"></script>
+    <script>
+      var canvas = document.getElementById('canvas');
+      var context = canvas.getContext('2d');
+      context.beginPath();
+      context.arc(800, 550, 20, 0, Math.PI * 2, false);
+      context.fillStyle = 'green';
+      context.fill();
+
+    </script>
+  </body>
+</html>
