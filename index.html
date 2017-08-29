@@ -13,7 +13,11 @@
       var context = canvas.getContext('2d');
       var x = 800;
       var y = 550;
-      var dx = -10;
+      var dx = -6;
+      var dy = -6;
+      var g = 0;
+      var ar = 0;
+      var xdecel = 0.02;
 
 
       function drawBall() {
@@ -26,9 +30,12 @@
       function draw() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         drawBall();
-        x += dx;
-        if(x === 0) { dx = 10 }
-        if(x === 1000) { dx = -5 }
+        if(dx + ar < 0) {
+          x += dx + ar;
+        }
+        y += dy + g;
+        g += 0.1;
+        ar += xdecel;
       }
 
       setInterval(draw, 20);
