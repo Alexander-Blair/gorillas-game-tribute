@@ -21,7 +21,8 @@
     width: 100,
     height: 150
   }
-  collisionDetector = new CollisionDetector(rectangle)
+
+  collisionDetector = new CollisionDetector()
 
   function drawBall() {
     context.beginPath();
@@ -30,12 +31,11 @@
     context.fill();
   }
   function drawRect() {
-    var rect = collisionDetector.rectangle()
     context.beginPath();
-    context.rect(rect.leftXCoord,
-                 rect.topYCoord,
-                 rect.width,
-                 rect.height);
+    context.rect(rectangle.leftXCoord,
+                 rectangle.topYCoord,
+                 rectangle.width,
+                 rectangle.height);
     context.fillStyle = 'red';
     context.fill();
   }
@@ -50,7 +50,7 @@
     banana.yCoord += dy + gravity;
     gravity+= 0.1;
     airResistance += xdecel;
-    if(collisionDetector.isHit(banana)) {
+    if(collisionDetector.isHit(rectangle, banana)) {
       freeze()
     }
   }

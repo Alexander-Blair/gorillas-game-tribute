@@ -24,28 +24,28 @@ describe("Collision Detector", function() {
   rightMissBanana = new MockBanana(250, 500);
   topMissBanana = new MockBanana(150, 400);
 
-  collisionDetector = new CollisionDetector(mockRectangle)
+  collisionDetector = new CollisionDetector()
 
   describe("collision", function() {
     it("detects a hit to the left side", function() {
-      expect(collisionDetector.isHit(leftHitBanana)).toBe(true);
+      expect(collisionDetector.isHit(mockRectangle, leftHitBanana)).toBe(true);
     });
     it("detects a hit to the right side", function() {
-      expect(collisionDetector.isHit(rightHitBanana)).toBe(true);
+      expect(collisionDetector.isHit(mockRectangle, rightHitBanana)).toBe(true);
     });
     it("detects a hit to the top side", function() {
-      expect(collisionDetector.isHit(topHitBanana)).toBe(true);
+      expect(collisionDetector.isHit(mockRectangle, topHitBanana)).toBe(true);
     });
   });
   describe("not a collision", function() {
     it("detects a hit to the left side", function() {
-      expect(collisionDetector.isHit(leftMissBanana)).toBe(false);
+      expect(collisionDetector.isHit(mockRectangle, leftMissBanana)).toBe(false);
     });
     it("detects a hit to the right side", function() {
-      expect(collisionDetector.isHit(rightMissBanana)).toBe(false);
+      expect(collisionDetector.isHit(mockRectangle, rightMissBanana)).toBe(false);
     });
     it("detects a hit to the top side", function() {
-      expect(collisionDetector.isHit(topMissBanana)).toBe(false);
+      expect(collisionDetector.isHit(mockRectangle, topMissBanana)).toBe(false);
     });
   });
 });
