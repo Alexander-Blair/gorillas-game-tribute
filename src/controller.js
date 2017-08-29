@@ -1,38 +1,43 @@
 (function() {
-  var canvas = document.getElementById('canvas');
-  var context = canvas.getContext('2d');
-  var x = 800;
-  var y = 550;
-  var dx = -6.2;
-  var dy = -6;
-  var gravity= 0;
-  var airResistance = 0;
-  var xdecel = 0.02;
+  var canvas, context, x, y, dx, dy;
+  var gravity, airResistance, xdecel;
+  var banana, rectangle, collisionDetector;
 
+  canvas = document.getElementById('canvas');
+  context = canvas.getContext('2d');
+  dx = -7;
+  dy = -6;
+  gravity= 0;
+  airResistance = 0;
+  xdecel = 0.02;
+
+  banana = {
+    xCoord: 800,
+    yCoord: 550
+  }
+  rectangle = {
+    leftXCoord: 175,
+    topYCoord: 450,
+    width: 100,
+    height: 150
+  }
+  collisionDetector = new CollisionDetector(rectangle)
 
   function drawBall() {
     context.beginPath();
-    context.arc(x, y, 10, 0, Math.PI * 1.5, false);
-    context.fillStyle = 'green';
+    context.arc(banana.xCoord, banana.yCoord, 10, 0, Math.PI * 1.5, false);
+    context.fillStyle = 'yellow';
     context.fill();
   }
   function drawRect() {
+    var rect = collisionDetector.rectangle()
     context.beginPath();
-    context.rect(175, 500, 50, 100);
+    context.rect(rect.leftXCoord,
+                 rect.topYCoord,
+                 rect.width,
+                 rect.height);
     context.fillStyle = 'red';
     context.fill();
-  }
-
-  function collisionDetector(leftXCoord, rightXCoord, topYCoord, bottomYCoord) {
-    if (x < rightXCoord + 10 && x > leftXCoord - 10) {
-      if (y < bottomYCoord + 10 && y > topYCoord + 10) {
-        dx = 0;
-        dy = 0;
-        gravity = 0;
-        airResistance = 0;
-        xdecel = 0;
-      }
-    }
   }
 
   function draw() {
@@ -40,12 +45,22 @@
     drawBall();
     drawRect();
     if(dx + airResistance < 0) {
-      x += dx + airResistance;
+      banana.xCoord += dx + airResistance;
     }
-    y += dy + gravity;
+    banana.yCoord += dy + gravity;
     gravity+= 0.1;
     airResistance += xdecel;
-    collisionDetector();
+    if(collisionDetector.isHit(banana)) {
+      freeze()
+    }
+  }
+
+  function freeze() {
+    dx = 0;
+    dy = 0;
+    gravity = 0;
+    airResistance = 0;
+    xdecel = 0;
   }
 
   setInterval(draw, 20);
