@@ -8,7 +8,8 @@ describe("Terrain", function() {
 
   describe(".generate", function(){
     it("returns an array", function(){
-      expect(terrain.generate().constructor).toBe(Array);
+      terrain.generate();
+      expect(terrain.tileArray.constructor).toBe(Array);
     });
   });
 
