@@ -3,11 +3,14 @@
   var gravity, airResistance, xdecel;
   var banana, rectangle, collisionDetector;
   var numberText = "Velocity: ";
+  var terrainUnitWidth = 30;
+  var terrainUnitHeight = 18;
 
+  document.getElementById("canvas").outerHTML = '<canvas id="canvas" width="' + String(terrainUnitWidth * 50) + '" height="' + String(terrainUnitHeight * 50) + '" style="background-color: lightblue"></canvas>';
   canvas = document.getElementById('canvas');
   context = canvas.getContext('2d');
 
-  // movement constants to be extracted  
+  // movement constants to be extracted
   dx = -7;
   dy = -6;
   gravity= 0;
@@ -16,36 +19,38 @@
 
   // objects to be extracted
   banana = {
-    xCoord: 800,
-    yCoord: 550
-  }
+    xCoord: 950,
+    yCoord: 300
+  };
   rectangle = {
     leftXCoord: 175,
     topYCoord: 450,
     width: 100,
     height: 150
-  }
+  };
 
-  collisionDetector = new CollisionDetector()
+  collisionDetector = new CollisionDetector();
 
   var numberListener = window.addEventListener("keypress", function(event) {
     var numKeys = keyHashes.numberKeys;
-    if(event.which >= numKeys.min
-       && event.which <= numKeys.max) {
+    if(event.which >= numKeys.min && event.which <= numKeys.max) {
       numberText += numKeys[event.which];
     }
   });
 
   var enterListener = window.addEventListener("keypress", function(event) {
     var miscKeys = keyHashes.miscKeys;
-    if(event.which >= miscKeys.min
-     && event.which <= miscKeys.max) {
+    if(event.which >= miscKeys.min && event.which <= miscKeys.max) {
       if(miscKeys[event.which] === "enter") {
-        console.log('you pressed enter!')
+        console.log('you pressed enter!');
       }
     }
   });
 
+  terrain = new Terrain(terrainUnitWidth, terrainUnitHeight);
+  terrainRenderer = new TerrainRenderer(context);
+  terrainTileMap = terrain.generate();
+  terrainCoordArray = terrainRenderer.generateCoordArray(terrainTileMap);
 
   // draw functions to be extracted
   function drawText() {
@@ -73,16 +78,16 @@
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawText();
     drawBall();
-    drawRect();
+    terrainRenderer.fillBlocks(terrainCoordArray);
     if(dx + airResistance < 0) {
       banana.xCoord += dx + airResistance;
     }
     banana.yCoord += dy + gravity;
     gravity+= 0.1;
     airResistance += xdecel;
-    if(collisionDetector.isHit(rectangle, banana)) {
-      freeze()
-    }
+    // if(collisionDetector.isHit(rectangle, banana)) {
+    //   freeze();
+    // }
   }
 
   function freeze() {

@@ -1,15 +1,14 @@
 (function(exports){
 
-  var terrainUnitWidth = 20;
-  var terrainUnitHeight = 12;
-
-  function Terrain() {
+  function Terrain(width, height) {
     this.tileArray = [];
+    this.terrainUnitWidth = width;
+    this.terrainUnitHeight = height;
   }
 
   Terrain.prototype = {
     generate: function() {
-      var tileArray = this.generate2DArray(terrainUnitWidth, terrainUnitHeight);
+      var tileArray = this.generate2DArray(this.terrainUnitWidth, this.terrainUnitHeight);
       var widthArray = this.generateWidthArray();
       var buildingCount = widthArray.length;
       var heightArray = this.generateHeightArray(buildingCount);
@@ -41,11 +40,11 @@
     generateWidthArray: function() {
       var widthArray = [];
       var i = 0;
-      while(widthArray.reduce(add, 0) < terrainUnitWidth - 3) {
+      while(widthArray.reduce(add, 0) < this.terrainUnitWidth - 3) {
         widthArray[i] = randombetween(1, 3);
         i ++;
       }
-      widthArray[i] = terrainUnitWidth - (widthArray.reduce(add, 0));
+      widthArray[i] = this.terrainUnitWidth - (widthArray.reduce(add, 0));
       return widthArray;
     },
     generateHeightArray: function(length) {
