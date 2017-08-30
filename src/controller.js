@@ -1,7 +1,9 @@
 (function() {
-  var canvas, context, dx, dy, gravity, xdecel;
+  var canvas, context, dx, dy, gravity;
   var banana, gorillas, collisionDetector;
   var velocity = '';
+  var gotAngle = false;
+  var angle = '';
   var run = false;
   var terrainUnitWidth = 20;
   var terrainUnitHeight = 12;
@@ -22,7 +24,11 @@
     var numKeys = keyRanges.numberKeys;
     var key = String.fromCharCode(event.which);
     if(event.which >= numKeys.min && event.which <= numKeys.max) {
-      velocity += key;
+      if(gotAngle) {
+        velocity += key;
+      } else {
+        angle += key;
+      }
     }
   });
 
@@ -31,9 +37,14 @@
     var key = String.fromCharCode(event.which);
     if(event.which >= miscKeys.min && event.which <= miscKeys.max) {
       if(key === "\r") {
-        unfreeze();
-        run = true;
-        banana.set(bananaStartXCoord, bananaStartYCoord)
+        if(gotAngle && velocity.length > 0) {
+          banana.set(bananaStartXCoord, bananaStartYCoord)
+          unfreeze(velocity, angle);
+          run = true;
+          gotAngle = false;
+        } else if(!gotAngle && angle.length > 0) {
+          gotAngle = true;
+        }
       }
     }
   });
@@ -44,9 +55,14 @@
   terrainCoordArray = terrainRenderer.generateCoordArray(terrainTileMap);
 
   // draw functions to be extracted
-  function drawText() {
+  function drawVelocity() {
     context.font = "16px Arial";
-    context.fillText("Velocity: " + velocity, 10, 50);
+    context.fillText("Velocity: " + velocity, 10, 100);
+  }
+
+  function drawAngle() {
+    context.font = "16px Arial";
+    context.fillText("Angle: " + angle, 10, 50);
   }
 
   function drawBall() {
@@ -77,14 +93,15 @@
       if(banana.yCoord() > 600) {
         run = false;
       }
-      if(dx < 0) {
-        banana._xCoord += dx;
-      }
       banana._yCoord += dy + gravity;
-      gravity+= 0.3;
+      banana._xCoord += dx;
+      gravity += 0.4;
     } else {
       freeze();
-      drawText();
+      drawAngle();
+      if(gotAngle) {
+        drawVelocity();
+      }
       drawBall();
     }
   }
@@ -96,12 +113,12 @@
     xdecel = 0;
   }
 // movement to be extracted
-  function unfreeze() {
-    dx = -9.6;
-    dy = -9.6;
-    gravity= 0;
-    xdecel = 0.02;
+  function unfreeze(shotVelocity, shotAngle) {
+    dx = -(shotVelocity / 5 * Math.cos(shotAngle * (Math.PI / 180)));
+    dy = -(shotVelocity / 5 * Math.sin(shotAngle * (Math.PI / 180)));
+    gravity = 0;
     velocity = '';
+    angle = '';
   }
 
   setInterval(draw, 20);
