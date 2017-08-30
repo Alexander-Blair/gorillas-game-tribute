@@ -85,12 +85,18 @@
 
   function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    terrainRenderer.fillBlocks(terrainCoordArray);
     drawGorillas();
     if (run === true) {
+      if(gorillaCollisionDetector.isHit(gorillas[1], banana)) {
+        run = false
+        return
+      }
       drawBall();
-      if(gorillaCollisionDetector.isHit(gorillas[1], banana)) { run = false }
-      // terrainRenderer.fillBlocks(terrainCoordArray);
       if(banana.yCoord() > 600) {
+        run = false;
+      }
+      if(banana.xCoord() + banana.width() < 0) {
         run = false;
       }
       banana._yCoord += dy + gravity;
