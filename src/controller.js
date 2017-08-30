@@ -1,48 +1,40 @@
 (function() {
-  var canvas, context, x, y, dx, dy;
-  var gravity, airResistance, xdecel;
-  var banana, rectangle, collisionDetector;
-  var numberText = "Velocity: ";
-  var terrainUnitWidth = 30;
-  var terrainUnitHeight = 18;
+  var canvas, context, dx, dy, gravity, xdecel;
+  var banana, gorillas, collisionDetector;
+  var velocity = '';
+  var run = false;
+  var terrainUnitWidth = 20;
+  var terrainUnitHeight = 12;
+  var bananaStartXCoord = 860;
+  var bananaStartYCoord = 540;
 
   document.getElementById("canvas").outerHTML = '<canvas id="canvas" width="' + String(terrainUnitWidth * 50) + '" height="' + String(terrainUnitHeight * 50) + '" style="background-color: lightblue"></canvas>';
   canvas = document.getElementById('canvas');
   context = canvas.getContext('2d');
 
-  // movement constants to be extracted
-  dx = -7;
-  dy = -6;
-  gravity= 0;
-  airResistance = 0;
-  xdecel = 0.02;
-
-  // objects to be extracted
-  banana = {
-    xCoord: 950,
-    yCoord: 300
-  };
-  rectangle = {
-    leftXCoord: 175,
-    topYCoord: 450,
-    width: 100,
-    height: 150
-  };
-
-  collisionDetector = new CollisionDetector();
+  gorillas = [];
+  gorillas.push(new Gorilla(800, 550))
+  gorillas.push(new Gorilla(200, 550))
+  banana = new Banana(bananaStartXCoord, bananaStartYCoord)
+  gorillaCollisionDetector = new GorillaCollisionDetector();
 
   var numberListener = window.addEventListener("keypress", function(event) {
-    var numKeys = keyHashes.numberKeys;
+    var numKeys = keyRanges.numberKeys;
+    var key = String.fromCharCode(event.which);
     if(event.which >= numKeys.min && event.which <= numKeys.max) {
-      numberText += numKeys[event.which];
+      numberText += key;
+      velocity += key;
     }
   });
 
   var enterListener = window.addEventListener("keypress", function(event) {
-    var miscKeys = keyHashes.miscKeys;
+    var miscKeys = keyRanges.miscKeys;
+    var key = String.fromCharCode(event.which);
     if(event.which >= miscKeys.min && event.which <= miscKeys.max) {
-      if(miscKeys[event.which] === "enter") {
-        console.log('you pressed enter!');
+      if(key === "\r") {
+        unfreeze();
+        run = true;
+        banana.set(bananaStartXCoord, bananaStartYCoord)
       }
     }
   });
@@ -55,47 +47,63 @@
   // draw functions to be extracted
   function drawText() {
     context.font = "16px Arial";
-    context.fillText(numberText, 10, 50);
+    context.fillText("Velocity: " + velocity, 10, 50);
   }
 
   function drawBall() {
     context.beginPath();
-    context.arc(banana.xCoord, banana.yCoord, 10, 0, Math.PI * 1.5, false);
+    context.rect(banana.xCoord, banana.yCoord, 20, 20);
     context.fillStyle = 'yellow';
     context.fill();
   }
-  function drawRect() {
-    context.beginPath();
-    context.rect(rectangle.leftXCoord,
-                 rectangle.topYCoord,
-                 rectangle.width,
-                 rectangle.height);
-    context.fillStyle = 'red';
-    context.fill();
+  function drawGorillas() {
+    for(var i = 0; i < 2; i++) {
+      context.beginPath();
+      context.rect(gorillas[i].xCoord,
+        gorillas[i].yCoord,
+        gorillas[i].width,
+        gorillas[i].height);
+        context.fillStyle = 'gray';
+        context.fill();
+    }
   }
 
   function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    drawText();
-    drawBall();
-    terrainRenderer.fillBlocks(terrainCoordArray);
-    if(dx + airResistance < 0) {
-      banana.xCoord += dx + airResistance;
+    drawGorillas();
+    if (run === true) {
+      drawBall();
+      if(gorillaCollisionDetector.isHit(gorillas[1], banana)) { run = false }
+      // terrainRenderer.fillBlocks(terrainCoordArray);
+      if(banana.yCoord > 600) {
+        run = false;
+        banana.yCoord
+      }
+      if(dx < 0) {
+        banana.xCoord += dx;
+      }
+      banana.yCoord += dy + gravity;
+      gravity+= 0.3;
+    } else {
+      freeze();
+      drawText();
+      drawBall();
     }
-    banana.yCoord += dy + gravity;
-    gravity+= 0.1;
-    airResistance += xdecel;
-    // if(collisionDetector.isHit(rectangle, banana)) {
-    //   freeze();
-    // }
   }
 
   function freeze() {
     dx = 0;
     dy = 0;
     gravity = 0;
-    airResistance = 0;
     xdecel = 0;
+  }
+// movement to be extracted
+  function unfreeze() {
+    dx = -9.6;
+    dy = -9.6;
+    gravity= 0;
+    xdecel = 0.02;
+    velocity = '';
   }
 
   setInterval(draw, 20);
