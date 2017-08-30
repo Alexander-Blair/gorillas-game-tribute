@@ -49,8 +49,9 @@
 
   terrain = new Terrain(terrainUnitWidth, terrainUnitHeight);
   terrainRenderer = new TerrainRenderer(context);
-  terrainTileMap = terrain.generate();
-  terrainCoordArray = terrainRenderer.generateCoordArray(terrainTileMap);
+  terrain.generate();
+  terrainTileArray = terrain.tileArray;
+  terrainCoordArray = terrainRenderer.generateCoordArray(terrainTileArray);
 
   // draw functions to be extracted
   function drawText() {
