@@ -25,7 +25,7 @@
                      coordArray[i][1],
                      50,
                      50);
-        this.context.fillStyle = 'red';
+        this.context.fillStyle = 'darkred';
         this.context.fill();
       }
     }
