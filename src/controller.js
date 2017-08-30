@@ -51,7 +51,7 @@
     gravity+= 0.1;
     airResistance += xdecel;
     if(collisionDetector.isHit(rectangle, banana)) {
-      freeze()
+      freeze();
     }
   }
 
