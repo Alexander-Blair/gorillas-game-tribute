@@ -25,7 +25,7 @@
           x += 1;
         }
       }
-      return tileArray;
+      this.tileArray = tileArray;
     },
     generate2DArray: function(width, height) {
       var array = [];
@@ -40,8 +40,8 @@
     generateWidthArray: function() {
       var widthArray = [];
       var i = 0;
-      while(widthArray.reduce(add, 0) < this.terrainUnitWidth - 3) {
-        widthArray[i] = randombetween(1, 3);
+      while(widthArray.reduce(add, 0) < this.terrainUnitWidth - 4) {
+        widthArray[i] = randombetween(2, 3);
         i ++;
       }
       widthArray[i] = this.terrainUnitWidth - (widthArray.reduce(add, 0));
@@ -51,7 +51,9 @@
       var heightArray = [];
       i = 0;
       while(heightArray.length < length) {
-        heightArray[i] = randombetween(1, 8);
+        if (i === 0 || i === length - 1) { heightArray[i] = randombetween(4, 6); }
+        else if (i === 1 || i === length - 2) { heightArray[i] = randombetween(4, 6); }
+        else { heightArray[i] = randombetween(1, 8); }
         i ++;
       }
       return heightArray;
