@@ -51,9 +51,9 @@
       var heightArray = [];
       i = 0;
       while(heightArray.length < length) {
-        if (i === 0 || i === length - 1) { heightArray[i] = randombetween(4, 6); }
-        else if (i === 1 || i === length - 2) { heightArray[i] = randombetween(4, 6); }
-        else { heightArray[i] = randombetween(1, 8); }
+        if (i === 0 || i === length - 1) { heightArray[i] = randombetween(3, 4); }
+        else if (i === 1 || i === length - 2) { heightArray[i] = randombetween(2, 5); }
+        else { heightArray[i] = randombetween(1, (this.terrainUnitHeight/2 + 2)); }
         i ++;
       }
       return heightArray;
