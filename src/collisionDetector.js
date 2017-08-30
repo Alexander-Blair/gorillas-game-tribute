@@ -25,10 +25,9 @@
 
       for (var i = leftTile; i <= rightTile; i++) {
         for (var j = topTile; j <= bottomTile; i++) {
-          //Get the tile at the location of (i, j)
-          var tile = tileMap.tileAt(i, j);
-          //Check if the tile is a wall and return true if it is
-          if(tile.isWall) {
+          var tileCoords = [ Math.floor(i / 50), Math.floor(j / 50) ];
+          var tile = tileMap.tileAt(tileCoords[0], tileCoords[1]);
+          if(tile === 1) {
             anyCollision = true;
           }
         }
