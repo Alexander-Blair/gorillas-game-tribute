@@ -1,7 +1,9 @@
 describe("Terrain", function() {
 
   beforeEach(function() {
-    terrain = new Terrain();
+    var width = 20;
+    var height = 12;
+    terrain = new Terrain(width, height);
   });
 
   describe(".generate", function(){
