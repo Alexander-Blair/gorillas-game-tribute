@@ -6,16 +6,23 @@ describe("Collision Detector", function() {
   var leftMissBanana, rightMissBanana, topMissBanana;
 
   mockRectangle = {
-    leftXCoord: 100,
-    topYCoord: 450,
-    width: 100,
-    height: 150
+    xCoord: function() { return 100; },
+    yCoord: function() { return 450; },
+    width: function() { return 100; },
+    height: function() { return 150; }
   }
   function MockBanana(xCoord, yCoord) {
-    this.xCoord = xCoord;
-    this.yCoord = yCoord;
-    this.width = 25;
-    this.height = 25;
+    this._xCoord = xCoord;
+    this._yCoord = yCoord;
+    this._width = 25;
+    this._height = 25;
+  }
+
+  MockBanana.prototype = {
+    xCoord: function() { return this._xCoord; },
+    yCoord: function() { return this._yCoord; },
+    width: function() { return this._width; },
+    height: function() { return this._height; }
   }
 
   leftHitBanana = new MockBanana(100, 500);

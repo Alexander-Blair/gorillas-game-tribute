@@ -22,7 +22,6 @@
     var numKeys = keyRanges.numberKeys;
     var key = String.fromCharCode(event.which);
     if(event.which >= numKeys.min && event.which <= numKeys.max) {
-      numberText += key;
       velocity += key;
     }
   });
@@ -52,17 +51,17 @@
 
   function drawBall() {
     context.beginPath();
-    context.rect(banana.xCoord, banana.yCoord, 20, 20);
+    context.rect(banana.xCoord(), banana.yCoord(), 20, 20);
     context.fillStyle = 'yellow';
     context.fill();
   }
   function drawGorillas() {
     for(var i = 0; i < 2; i++) {
       context.beginPath();
-      context.rect(gorillas[i].xCoord,
-        gorillas[i].yCoord,
-        gorillas[i].width,
-        gorillas[i].height);
+      context.rect(gorillas[i].xCoord(),
+        gorillas[i].yCoord(),
+        gorillas[i].width(),
+        gorillas[i].height());
         context.fillStyle = 'gray';
         context.fill();
     }
@@ -75,14 +74,13 @@
       drawBall();
       if(gorillaCollisionDetector.isHit(gorillas[1], banana)) { run = false }
       // terrainRenderer.fillBlocks(terrainCoordArray);
-      if(banana.yCoord > 600) {
+      if(banana.yCoord() > 600) {
         run = false;
-        banana.yCoord
       }
       if(dx < 0) {
-        banana.xCoord += dx;
+        banana._xCoord += dx;
       }
-      banana.yCoord += dy + gravity;
+      banana._yCoord += dy + gravity;
       gravity+= 0.3;
     } else {
       freeze();

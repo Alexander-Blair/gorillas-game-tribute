@@ -3,8 +3,8 @@
 
   GorillaCollisionDetector.prototype = {
     isHit: function(hitBox, banana) {
-      var rightXCoord = hitBox.leftXCoord() + hitBox.width();
-      var bottomYCoord = hitBox.topYCoord() + hitBox.height();
+      var rightXCoord = hitBox.xCoord() + hitBox.width();
+      var bottomYCoord = hitBox.yCoord() + hitBox.height();
 
       if(banana.xCoord() > hitBox.xCoord() + hitBox.width()
         || banana.xCoord() + banana.width() < hitBox.xCoord()

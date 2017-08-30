@@ -8,8 +8,8 @@
 
   Banana.prototype = {
     set: function(xCoord, yCoord) {
-      this.xCoord = xCoord;
-      this.yCoord = yCoord;
+      this._xCoord = xCoord;
+      this._yCoord = yCoord;
     },
     xCoord: function() {
       return this._xCoord;

@@ -1,9 +1,9 @@
 (function(exports) {
   function Gorilla(xCoord, yCoord) {
-    this.xCoord = xCoord;
-    this.yCoord = yCoord;
-    this.width = 50;
-    this.height = 50;
+    this._xCoord = xCoord;
+    this._yCoord = yCoord;
+    this._width = 50;
+    this._height = 50;
   }
 
   Gorilla.prototype = {
