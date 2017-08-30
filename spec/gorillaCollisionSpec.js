@@ -24,7 +24,7 @@ describe("Collision Detector", function() {
   rightMissBanana = new MockBanana(250, 500);
   topMissBanana = new MockBanana(150, 400);
 
-  collisionDetector = new CollisionDetector()
+  collisionDetector = new GorillaCollisionDetector()
 
   describe("collision", function() {
     it("detects a hit to the left side", function() {
