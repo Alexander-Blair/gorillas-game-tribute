@@ -15,8 +15,8 @@
   gorillas.push(new Gorilla());
 
   gorillaCollisionDetector = new GorillaCollisionDetector();
-  // buildingCollisionDetector = new BuildingCollisionDetector;
-  buildingCollisionDetector = {};
+  buildingCollisionDetector = new CollisionDetector();
+
   terrainRenderer = new TerrainRenderer(canvasContext);
   terrainConstructor = Terrain;
   bananaRenderer = new BananaRenderer(canvasContext);

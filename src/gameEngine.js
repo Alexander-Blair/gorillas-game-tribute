@@ -3,7 +3,7 @@
 
   var run, dx, dy, gravity, gotAngle, velocity, angle;
   var terrainUnitWidth, terrainUnitHeight;
-  var newTerrain, terrainCoordArray;
+  var newTerrain, terrainCoordArray, terrainTileArray;
 
   run = false;
   terrainUnitWidth = 24;
@@ -13,7 +13,7 @@
   angle = '';
 
   // THIS SHOULD ALL BE EXTRACTED
-  var bananaStartYCoord = (terrainUnitHeight * 50) - 140;
+  var bananaStartYCoord = (terrainUnitHeight * 50) - 290;
   var bananaStartXCoord = (terrainUnitWidth * 50) - 40;
   var gorillaStartYCoords = [(terrainUnitHeight * 50) - 250, (terrainUnitHeight * 50) - 250];
   var gorillaStartXCoords = [50, (terrainUnitWidth * 50) - 100];
@@ -51,7 +51,7 @@
       }
     },
     generateLandscape: function() {
-      var terrain, terrainTileArray;
+      var terrain;
       terrain = this._terrainConstructor;
       newTerrain = new terrain(terrainUnitWidth, terrainUnitHeight);
       newTerrain.generate();
@@ -68,6 +68,11 @@
 
       if (run === true) {
         if(this._gorillaCollisionDetector.isHit(gorillas[0], banana)) {
+          run = false;
+          return;
+        }
+
+        if(this._buildingCollisionDetector.isHit(banana, terrainTileArray)) {
           run = false;
           return;
         }
