@@ -1,5 +1,6 @@
-'use strict';
 (function() {
+  'use strict';
+
   var gameController, gameEngine;
   var gorillaCollisionDetector, buildingCollisionDetector;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
@@ -14,10 +15,8 @@
   buildingCollisionDetector = {};
   terrainRenderer = new TerrainRenderer(canvasContext);
   terrainConstructor = Terrain;
-  // bananaRenderer = new BananaRenderer;
-  bananaRenderer = {};
-  // gorillaRenderer = new GorillaRenderer;
-  gorillaRenderer = {};
+  bananaRenderer = new BananaRenderer(canvasContext);
+  gorillaRenderer = new GorillaRenderer(canvasContext);
 
   gameEngine = new GameEngine(canvasElement,
                               canvasContext,
@@ -27,10 +26,10 @@
                               gorillaRenderer,
                               bananaRenderer,
                               terrainRenderer,
-                              terrainConstructor)
+                              terrainConstructor);
 
   gameController = new GameController(windowObject,
-                                      gameEngine)
+                                      gameEngine);
 
   gameController.setupKeystrokeListener();
   gameController.initializeGameEngine();

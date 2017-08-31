@@ -1,4 +1,5 @@
 (function(exports){
+  'use strict';
 
   function Terrain(width, height) {
     this.tileArray = [];

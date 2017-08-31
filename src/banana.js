@@ -1,4 +1,6 @@
 (function(exports) {
+  'use strict';
+  
   function Banana(xCoord, yCoord) {
     this._xCoord = xCoord;
     this._yCoord = yCoord;
@@ -23,6 +25,6 @@
     height: function() {
       return this._height;
     }
-  }
+  };
   exports.Banana = Banana;
 })(this);

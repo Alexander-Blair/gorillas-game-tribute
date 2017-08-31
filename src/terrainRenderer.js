@@ -1,4 +1,5 @@
 (function(exports) {
+  'use strict';
 
   function TerrainRenderer(context) {
     this.context = context;

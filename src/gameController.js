@@ -1,6 +1,5 @@
-'use strict';
-
 (function(exports) {
+  'use strict';
 
   function GameController(windowObject, gameEngine) {
     this.windowObject = windowObject;
@@ -27,10 +26,10 @@
     initializeGameEngine: function() {
       this._gameEngine.initialize();
     }
-  }
+  };
 
   function inRange(code, range) {
-    return code >= range.min && code <= range.max
+    return code >= range.min && code <= range.max;
   }
   exports.GameController = GameController;
 })(this);
