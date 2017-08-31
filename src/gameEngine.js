@@ -15,8 +15,8 @@
   // THIS SHOULD ALL BE EXTRACTED
   var bananaStartYCoord = (terrainUnitHeight * 50) - 140;
   var bananaStartXCoord = (terrainUnitWidth * 50) - 40;
-  var gorillaStartYCoords = [(terrainUnitHeight * 50) - 100, (terrainUnitHeight * 50) - 100];
-  var gorillaStartXCoords = [100, (terrainUnitWidth * 50) - 100];
+  var gorillaStartYCoords = [(terrainUnitHeight * 50) - 250, (terrainUnitHeight * 50) - 250];
+  var gorillaStartXCoords = [50, (terrainUnitWidth * 50) - 100];
   // To here
 
   function GameEngine(canvas,
