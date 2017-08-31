@@ -1,12 +1,15 @@
 describe("Terrain", function() {
 
   beforeEach(function() {
-    terrain = new Terrain();
+    var width = 20;
+    var height = 12;
+    terrain = new Terrain(width, height);
   });
 
   describe(".generate", function(){
     it("returns an array", function(){
-      expect(terrain.generate().constructor).toBe(Array);
+      terrain.generate();
+      expect(terrain.tileArray.constructor).toBe(Array);
     });
   });
 
