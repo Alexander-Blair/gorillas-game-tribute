@@ -1,4 +1,5 @@
 (function(exports) {
+'use strict';
   
   function CollisionDetector() {
 
@@ -19,6 +20,6 @@
     convertCoords: function(coords) {
       return [Math.floor(coords[1] / 50), Math.floor(coords[0] / 50)]
     }
-  }
+  };
   exports.CollisionDetector = CollisionDetector;
 })(this);
