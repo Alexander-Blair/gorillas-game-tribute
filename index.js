@@ -11,8 +11,9 @@
 
   banana = new Banana();
   gorillas = [];
-  gorillas.push(new Gorilla());
-  gorillas.push(new Gorilla());
+  gorillas.push(new Gorilla({ isPlayerOne: true } ));
+  gorillas.push(new Gorilla({ isPlayerOne: false } ));
+  console.log(gorillas)
 
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
