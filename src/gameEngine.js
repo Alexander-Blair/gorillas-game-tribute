@@ -68,7 +68,8 @@
       var banana = this._banana;
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
-      this._gorillaRenderer.drawGorillas(gorillas);
+      this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
+      this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
       this.drawWind();
 
       if (run === true) {
