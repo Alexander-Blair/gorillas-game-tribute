@@ -110,16 +110,8 @@
       context.fill();
     },
     drawGorillas: function() {
-      var context = this.canvasContext;
-      for(var i = 0; i < 2; i++) {
-        context.beginPath();
-        context.rect(gorillas[i].xCoord(),
-                     gorillas[i].yCoord(),
-                     gorillas[i].width(),
-                     gorillas[i].height());
-        context.fillStyle = 'gray';
-        context.fill();
-      }
+      this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
+      this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
     },
     processNumber: function(key) {
       if(gotAngle) { velocity += key; }

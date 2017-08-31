@@ -17,7 +17,7 @@
   // bananaRenderer = new BananaRenderer;
   bananaRenderer = {};
   // gorillaRenderer = new GorillaRenderer;
-  gorillaRenderer = {};
+  gorillaRenderer = new Animator(canvasContext);
 
   gameEngine = new GameEngine(canvasElement,
                               canvasContext,
@@ -27,7 +27,8 @@
                               gorillaRenderer,
                               bananaRenderer,
                               terrainRenderer,
-                              terrainConstructor)
+                              terrainConstructor,
+                              gorillaRenderer)
 
   gameController = new GameController(windowObject,
                                       gameEngine)
