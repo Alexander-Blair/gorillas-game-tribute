@@ -28,7 +28,8 @@
                       gorillaRenderer,
                       bananaRenderer,
                       terrainRenderer,
-                      terrainConstructor) {
+                      terrainConstructor,
+                      game) {
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
@@ -39,6 +40,7 @@
     this._bananaRenderer = bananaRenderer;
     this._terrainRenderer = terrainRenderer;
     this._terrainConstructor = terrainConstructor;
+    this._game = game;
   }
 
   GameEngine.prototype = {
@@ -46,6 +48,13 @@
       this.generateLandscape();
       var self = this;
       setInterval(function(){self.gameLoop();}, 20);
+      for(var i = 0; i <= 1; i ++) {
+        this._gorillas[i].set(gorillaStartXCoords[i], gorillaStartYCoords[i]);
+      }
+    },
+
+    generateFixtures: function() {
+      this.generateLandscape();
       for(var i = 0; i <= 1; i ++) {
         this._gorillas[i].set(gorillaStartXCoords[i], gorillaStartYCoords[i]);
       }
@@ -67,9 +76,13 @@
       this._gorillaRenderer.drawGorillas(gorillas);
 
       if (run === true) {
-        if(this._gorillaCollisionDetector.isHit(gorillas[0], banana)) {
-          run = false;
-          return;
+
+        for(var i =0; i<2; i ++){
+          if(this._gorillaCollisionDetector.isHit(gorillas[i], banana)) {
+            this.game.updateScore(gorillas[i]);
+            run = false;
+            return;
+          }
         }
 
         if(this._buildingCollisionDetector.isHit(banana, terrainTileArray)) {
@@ -79,7 +92,7 @@
         this._bananaRenderer.drawBanana(banana);
         if(this.offScreen()) { run = false; }
         this.moveBanana();
-      } else {
+        } else {
         this.waitForInput();
         this.drawAngle();
         if(gotAngle) {

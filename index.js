@@ -1,13 +1,15 @@
 (function() {
   'use strict';
 
-  var gameController, gameEngine;
+  var gameController, gameEngine, game;
   var gorillaCollisionDetector, buildingCollisionDetector;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
   var banana, gorillas, canvasElement, canvasContext, windowObject;
   windowObject = window;
   canvasElement = document.getElementById("canvas");
   canvasContext = canvasElement.getContext('2d');
+
+  game = new Game();
 
   banana = new Banana();
   gorillas = [];
@@ -31,7 +33,8 @@
                               gorillaRenderer,
                               bananaRenderer,
                               terrainRenderer,
-                              terrainConstructor);
+                              terrainConstructor,
+                              game);
 
   gameController = new GameController(windowObject,
                                       gameEngine);
