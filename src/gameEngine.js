@@ -49,7 +49,7 @@
 
       var self = this;
       for(var i = 0; i <= 1; i ++) {
-        var tile = this._gorillas[i].chooseRandomTile(terrainTileArray,
+        var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
                                                  terrainUnitWidth,
                                                  terrainUnitHeight);
         this._gorillas[i].set(toCoords(tile[1]), toCoords(tile[0]))
