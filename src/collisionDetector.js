@@ -1,4 +1,6 @@
 (function(exports) {
+  'use strict';
+  
   function CollisionDetector() {}
 
   CollisionDetector.prototype = {
@@ -13,6 +15,6 @@
         return true;
       } else { return false; }
     }
-  }
+  };
   exports.CollisionDetector = CollisionDetector;
 })(this);
