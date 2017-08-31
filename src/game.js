@@ -31,6 +31,7 @@
       this.gameOver();
     } else {
       this.newRound();
+    }
   }
 
   exports.Game = Game;

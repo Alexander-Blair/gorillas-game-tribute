@@ -35,11 +35,9 @@
                               bananaRenderer,
                               terrainRenderer,
                               terrainConstructor,
-<<<<<<< HEAD
-                              game);
-=======
+                              game,
                               wind);
->>>>>>> master
+
 
   gameController = new GameController(windowObject,
                                       gameEngine);
