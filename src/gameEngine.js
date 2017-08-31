@@ -15,8 +15,6 @@
   // THIS SHOULD ALL BE EXTRACTED
   var bananaStartYCoord = (terrainUnitHeight * 50) - 290;
   var bananaStartXCoord = (terrainUnitWidth * 50) - 40;
-  var gorillaStartYCoords = [(terrainUnitHeight * 50) - 250, (terrainUnitHeight * 50) - 250];
-  var gorillaStartXCoords = [50, (terrainUnitWidth * 50) - 100];
   // To here
 
   function GameEngine(canvas,
@@ -44,11 +42,15 @@
   GameEngine.prototype = {
     initialize: function() {
       this.generateLandscape();
+
       var self = this;
-      setInterval(function(){self.gameLoop();}, 20);
       for(var i = 0; i <= 1; i ++) {
-        this._gorillas[i].set(gorillaStartXCoords[i], gorillaStartYCoords[i]);
+        var tile = this._gorillas[i].chooseRandomTile(terrainTileArray,
+                                                 terrainUnitWidth,
+                                                 terrainUnitHeight);
+        this._gorillas[i].set(toCoords(tile[1]), toCoords(tile[0]))
       }
+      setInterval(function(){self.gameLoop();}, 20);
     },
     generateLandscape: function() {
       var terrain;
@@ -89,7 +91,7 @@
       }
     },
     startGameLoop: function(angle, velocity) {
-      this._banana.set(bananaStartXCoord, bananaStartYCoord);
+      this._banana.set(this._gorillas[1].xCoord() + 60, this._gorillas[1].yCoord());
       this.setVelocities(angle, velocity);
       run = true;
       this.resetChoices();
@@ -154,5 +156,9 @@
       }
     }
   };
+
+  function toCoords(value) {
+    return value * 50;
+  }
   exports.GameEngine = GameEngine;
 })(this);

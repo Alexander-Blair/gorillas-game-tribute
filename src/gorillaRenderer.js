@@ -15,7 +15,7 @@
                      gorillas[i].yCoord(),
                      gorillas[i].width(),
                      gorillas[i].height());
-        context.fillStyle = 'gray';
+        context.fillStyle = 'pink';
         context.fill();
       }
     }

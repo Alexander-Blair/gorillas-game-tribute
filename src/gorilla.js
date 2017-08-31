@@ -27,20 +27,35 @@
     isPlayerOne: function() {
       return this._isPlayerOne;
     },
-    chooseSpawnCoordinates: function(tileMap,
+    chooseRandomTile: function(tileMap,
                                      terrainUnitWidth,
                                      terrainUnitHeight) {
-      var min, max;
-      var divider = terrainUnitWidth / 16;
-
-      if(this.isPlayerOne()) {
-        min = Math.round(divider)
-        max = Math.floor(divider * 6)
-      } else {
-        min = Math.round(divider * 10)
-        max = Math.floor(divider * 15)
+      var min, max, column, tile, divider;
+      divider = terrainUnitWidth / 16;
+      column = chooseTile(this.getMax(divider), this.getMin(divider))
+      tile = this.findTileHeight(tileMap, column, terrainUnitHeight) - 1;
+      return [tile, column];
+    },
+    findTileHeight: function(tileMap, column, terrainUnitHeight) {
+      for(var i = 0; i < terrainUnitHeight; i++) {
+        if(tileMap[i][column] === 1) {
+          return i;
+        }
       }
-      var tile = chooseTile(min, max)
+    },
+    getMax: function(divider) {
+      if(this.isPlayerOne()) {
+        return Math.floor(divider * 6) - 1;
+      } else {
+        return Math.floor(divider * 15) - 1;
+      }
+    },
+    getMin: function(divider) {
+      if(this.isPlayerOne()) {
+        return Math.round(divider) - 1;
+      } else {
+        return Math.round(divider * 10) - 1;
+      }
     }
   };
 
