@@ -1,7 +1,7 @@
 (function(exports) {
   'use strict';
 
-  var run, dx, dy, gravity, gotAngle, velocity, angle;
+  var run, dx, dy, gravity, gotAngle, velocity, angle, wind, airResistance = 0;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray, terrainTileArray;
 
@@ -15,8 +15,6 @@
   // THIS SHOULD ALL BE EXTRACTED
   var bananaStartYCoord = (terrainUnitHeight * 50) - 290;
   var bananaStartXCoord = (terrainUnitWidth * 50) - 40;
-  var gorillaStartYCoords = [(terrainUnitHeight * 50) - 250, (terrainUnitHeight * 50) - 250];
-  var gorillaStartXCoords = [50, (terrainUnitWidth * 50) - 100];
   // To here
 
   function GameEngine(canvas,
@@ -29,7 +27,8 @@
                       bananaRenderer,
                       terrainRenderer,
                       terrainConstructor,
-                      game) {
+                      game,
+                      wind) {
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
@@ -41,16 +40,24 @@
     this._terrainRenderer = terrainRenderer;
     this._terrainConstructor = terrainConstructor;
     this._game = game;
+    this._wind = wind;
+
   }
 
   GameEngine.prototype = {
     initialize: function() {
       this.generateLandscape();
+      this._wind.generateWind();
+      this._wind.generateWindArrow(terrainUnitWidth, terrainUnitHeight);
+
       var self = this;
-      setInterval(function(){self.gameLoop();}, 20);
       for(var i = 0; i <= 1; i ++) {
-        this._gorillas[i].set(gorillaStartXCoords[i], gorillaStartYCoords[i]);
+        var tile = this._gorillas[i].chooseRandomTile(terrainTileArray,
+                                                 terrainUnitWidth,
+                                                 terrainUnitHeight);
+        this._gorillas[i].set(toCoords(tile[1]), toCoords(tile[0]))
       }
+      setInterval(function(){self.gameLoop();}, 20);
     },
 
     generateFixtures: function() {
@@ -74,6 +81,7 @@
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
       this._gorillaRenderer.drawGorillas(gorillas);
+      this.drawWind();
 
       if (run === true) {
 
@@ -102,7 +110,7 @@
       }
     },
     startGameLoop: function(angle, velocity) {
-      this._banana.set(bananaStartXCoord, bananaStartYCoord);
+      this._banana.set(this._gorillas[1].xCoord() + 60, this._gorillas[1].yCoord());
       this.setVelocities(angle, velocity);
       run = true;
       this.resetChoices();
@@ -118,11 +126,13 @@
       dx = -(velocity / 5 * Math.cos(angle * (Math.PI / 180)));
       dy = -(velocity / 5 * Math.sin(angle * (Math.PI / 180)));
       gravity = 0;
+      airResistance = 0;
     },
     moveBanana: function() {
       this._banana._yCoord += dy + gravity;
-      this._banana._xCoord += dx;
+      this._banana._xCoord += dx + airResistance;
       gravity += 0.4;
+      airResistance += this._wind.wind;
     },
     processNumber: function(key) {
       if(gotAngle) { velocity += key; }
@@ -151,13 +161,20 @@
     },
     drawVelocity: function() {
       this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'black';
       this.canvasContext.fillText("Velocity: " + velocity + "_", 10, 100);
     },
     drawAngle: function() {
       this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'black';
       var text = "Angle: " + angle;
       if(!gotAngle) { text += "_"; }
       this.canvasContext.fillText(text, 10, 50);
+    },
+    drawWind: function(terrainUnitWidth, terrainUnitHeight) {
+      this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'yellow';
+      this.canvasContext.fillText(this._wind.windArrow, this._wind.x, this._wind.y);
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||
@@ -165,7 +182,11 @@
         this._banana.xCoord() > (terrainUnitWidth * 50)) {
         return true;
       }
-    }
+    },
   };
+
+  function toCoords(value) {
+    return value * 50;
+  }
   exports.GameEngine = GameEngine;
 })(this);

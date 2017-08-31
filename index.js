@@ -4,7 +4,7 @@
   var gameController, gameEngine, game;
   var gorillaCollisionDetector, buildingCollisionDetector;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
-  var banana, gorillas, canvasElement, canvasContext, windowObject;
+  var banana, gorillas, canvasElement, canvasContext, windowObject, wind;
   windowObject = window;
   canvasElement = document.getElementById("canvas");
   canvasContext = canvasElement.getContext('2d');
@@ -13,8 +13,8 @@
 
   banana = new Banana();
   gorillas = [];
-  gorillas.push(new Gorilla());
-  gorillas.push(new Gorilla());
+  gorillas.push(new Gorilla({ isPlayerOne: true } ));
+  gorillas.push(new Gorilla({ isPlayerOne: false } ));
 
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
@@ -23,6 +23,7 @@
   terrainConstructor = Terrain;
   bananaRenderer = new BananaRenderer(canvasContext);
   gorillaRenderer = new GorillaRenderer(canvasContext);
+  wind = new Wind();
 
   gameEngine = new GameEngine(canvasElement,
                               canvasContext,
@@ -34,7 +35,11 @@
                               bananaRenderer,
                               terrainRenderer,
                               terrainConstructor,
+<<<<<<< HEAD
                               game);
+=======
+                              wind);
+>>>>>>> master
 
   gameController = new GameController(windowObject,
                                       gameEngine);
