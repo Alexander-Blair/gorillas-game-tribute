@@ -17,10 +17,13 @@
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
 
-  terrainRenderer = new TerrainRenderer(canvasContext);
+  var spriteSheet = new Image();
+  spriteSheet.src = "./images/gorillasSpritesheet.png";
+
+  terrainRenderer = new TerrainRenderer(canvasContext, spriteSheet);
   terrainConstructor = Terrain;
-  bananaRenderer = new BananaRenderer(canvasContext);
-  gorillaRenderer = new GorillaRenderer(canvasContext);
+  bananaRenderer = new BananaRenderer(canvasContext, spriteSheet);
+  gorillaRenderer = new GorillaRenderer(canvasContext, spriteSheet);
   wind = new Wind();
 
   gameEngine = new GameEngine(canvasElement,

@@ -1,25 +1,35 @@
-(function(exports){
+(function(exports) {
   'use strict';
 
-  function GorillaRenderer(context) {
-    this.canvasContext = context;
-
+  function GorillaRenderer(canvasContext, spriteSheet) {
+    this.canvasContext = canvasContext;
+    this.spriteSheet = spriteSheet;
   }
 
   GorillaRenderer.prototype = {
-    drawGorillas: function(gorillas) {
-      var context = this.canvasContext;
-      for(var i = 0; i < 2; i++) {
-        context.beginPath();
-        context.rect(gorillas[i].xCoord(),
-                     gorillas[i].yCoord(),
-                     gorillas[i].width(),
-                     gorillas[i].height());
-        context.fillStyle = 'pink';
-        context.fill();
-      }
+    drawGorilla1: function(x, y) {
+      this.canvasContext.drawImage(this.spriteSheet,
+                                  715,
+                                  0,
+                                  50,
+                                  50,
+                                  x,
+                                  y,
+                                  50,
+                                  50);
+    },
+    drawGorilla2: function(x, y) {
+      this.canvasContext.drawImage(this.spriteSheet,
+                                  615,
+                                  0,
+                                  50,
+                                  50,
+                                  x,
+                                  y,
+                                  50,
+                                  50);
     }
   };
 
-  exports.GorillaRenderer = GorillaRenderer;
+ exports.GorillaRenderer = GorillaRenderer;
 })(this);

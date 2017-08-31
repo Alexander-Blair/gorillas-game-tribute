@@ -1,17 +1,24 @@
 (function(exports){
   'use strict';
 
-  function BananaRenderer(context) {
+  function BananaRenderer(context, spriteSheet) {
     this.canvasContext = context;
+    this.spriteSheet = spriteSheet;
   }
 
   BananaRenderer.prototype = {
     drawBanana: function(banana) {
-      var context = this.canvasContext;
-      context.beginPath();
-      context.rect(banana.xCoord(), banana.yCoord(), 20, 20);
-      context.fillStyle = 'yellow';
-      context.fill();
+      var x = banana.xCoord();
+      var y = banana.yCoord();
+      this.canvasContext.drawImage(this.spriteSheet,
+                                  0,
+                                  0,
+                                  15,
+                                  15,
+                                  x,
+                                  y,
+                                  15,
+                                  15);
     }
   };
 
