@@ -18,14 +18,14 @@
       }
       return coordArray;
     },
-    fillBlocks: function(coordArray) {
+    fillBlocks: function(coordArray, colourArray) {
       for(i = 0;i < coordArray.length;i ++){
         this.context.beginPath();
         this.context.rect(coordArray[i][0],
                      coordArray[i][1],
                      50,
                      50);
-        this.context.fillStyle = 'darkred';
+        this.context.fillStyle = colourArray[i + 1];
         this.context.fill();
       }
     }
