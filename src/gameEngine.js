@@ -11,12 +11,13 @@
   velocity = '';
   angle = '';
 
-  // should be linked to which player's go it is
+  // THIS SHOULD ALL BE EXTRACTED
   var bananaStartXCoord = 860;
   var bananaStartYCoord = 540;
   var gorillas = [];
   gorillas.push(new Gorilla(800, 550))
   gorillas.push(new Gorilla(200, 550))
+  // To here
 
   function GameEngine(canvas,
                       canvasContext,
@@ -42,7 +43,7 @@
     initialize: function() {
       this.generateLandscape();
       var self = this;
-      setInterval(function(){self.draw();}, 20);
+      setInterval(function(){self.gameLoop();}, 20);
     },
     generateLandscape: function() {
       var terrain, newTerrain, terrainTileArray;
@@ -52,7 +53,8 @@
       terrainTileArray = newTerrain.tileArray;
       terrainCoordArray = this._terrainRenderer.generateCoordArray(terrainTileArray);
     },
-    draw: function() {
+    // THIS IS TO BE REFACTORED!!
+    gameLoop: function() {
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this._terrainRenderer.fillBlocks(terrainCoordArray);
       this.drawGorillas();
@@ -62,7 +64,7 @@
           run = false
           return
         }
-        this.drawBall();
+        this.drawBanana();
         if(banana.yCoord() > 600) {
           run = false;
         }
@@ -78,27 +80,30 @@
         if(gotAngle) {
           this.drawVelocity();
         }
-        this.drawBall();
+        this.drawBanana();
       }
     },
     startGameLoop: function(angle, velocity) {
       this._banana.set(bananaStartXCoord, bananaStartYCoord)
-      this.resumeGameLoop(angle, velocity);
+      this.setVelocities(angle, velocity);
       run = true;
+      this.resetChoices();
+    },
+    resetChoices: function() {
+      gotAngle = false;
+      angle = '', velocity = '';
     },
     waitForInput: function() {
-      dx = 0;
-      dy = 0;
+      dx = 0, dy = 0;
     },
-    resumeGameLoop: function(angle, velocity) {
+    setVelocities: function(angle, velocity) {
       dx = -(velocity / 5 * Math.cos(angle * (Math.PI / 180)));
       dy = -(velocity / 5 * Math.sin(angle * (Math.PI / 180)));
       gravity = 0;
     },
     // following functions to be extracted
-    drawBall: function() {
-      var context = this.canvasContext;
-      var banana = this._banana;
+    drawBanana: function() {
+      var context = this.canvasContext, banana = this._banana;
       context.beginPath();
       context.rect(banana.xCoord(), banana.yCoord(), 20, 20);
       context.fillStyle = 'yellow';
@@ -117,11 +122,8 @@
       }
     },
     processNumber: function(key) {
-      if(gotAngle) {
-        velocity += key;
-      } else {
-        angle += key;
-      }
+      if(gotAngle) { velocity += key; }
+      else { angle += key; }
     },
     processMiscKey: function(keyCode) {
       if(keyCode === 13) {
@@ -146,11 +148,13 @@
     },
     drawVelocity: function() {
       this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillText("Velocity: " + velocity, 10, 100);
+      this.canvasContext.fillText("Velocity: " + velocity + "_", 10, 100);
     },
     drawAngle: function() {
       this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillText("Angle: " + angle, 10, 50);
+      var text = "Angle: " + angle;
+      if(!gotAngle) { text += "_"; }
+      this.canvasContext.fillText(text, 10, 50);
     }
   }
   exports.GameEngine = GameEngine;
