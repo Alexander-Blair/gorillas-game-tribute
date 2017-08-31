@@ -19,7 +19,7 @@
   // gorillaRenderer = new GorillaRenderer;
   gorillaRenderer = {};
 
-  gameEngine = new GameEngine(canvas,
+  gameEngine = new GameEngine(canvasElement,
                               canvasContext,
                               banana,
                               gorillaCollisionDetector,
@@ -30,7 +30,6 @@
                               terrainConstructor)
 
   gameController = new GameController(windowObject,
-                                      canvasElement,
                                       gameEngine)
 
   gameController.setupKeystrokeListener();

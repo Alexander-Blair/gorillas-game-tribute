@@ -2,7 +2,7 @@
 (function(exports) {
   var run, dx, dy, gravity, gotAngle, velocity, angle;
   var terrainUnitWidth, terrainUnitHeight;
-  var terrainCoordArray;
+  var newTerrain, terrainCoordArray;
 
   run = false;
   terrainUnitWidth = 24;
@@ -46,7 +46,7 @@
       setInterval(function(){self.gameLoop();}, 20);
     },
     generateLandscape: function() {
-      var terrain, newTerrain, terrainTileArray;
+      var terrain, terrainTileArray;
       terrain = this._terrainConstructor;
       newTerrain = new terrain(terrainUnitWidth, terrainUnitHeight);
       newTerrain.generate();
@@ -56,7 +56,7 @@
     // THIS IS TO BE REFACTORED!!
     gameLoop: function() {
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this._terrainRenderer.fillBlocks(terrainCoordArray);
+      this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
       this.drawGorillas();
       if (run === true) {
         var banana = this._banana;
