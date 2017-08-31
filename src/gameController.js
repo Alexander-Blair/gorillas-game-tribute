@@ -1,14 +1,9 @@
 'use strict';
 
 (function(exports) {
-  var banana, gorillas, collisionDetector, gorillaCollisionDetector;
-  var terrain, terrainRenderer, terrainTileArray, terrainCoordArray;
-  var gameEngine;
 
-  function GameController(windowObject, canvasElement, gameEngine) {
+  function GameController(windowObject, gameEngine) {
     this.windowObject = windowObject;
-    this.canvasElement = canvasElement;
-    this.context = this.canvasElement.getContext('2d');
     this._gameEngine = gameEngine;
   }
 
@@ -16,15 +11,18 @@
     setupKeystrokeListener: function() {
       var self = this;
       this.windowObject.addEventListener("keydown", function(event) {
-        var key = String.fromCharCode(event.which);
-        if(inRange(event.which, keyRanges.numberKeys)) {
-          self._gameEngine.processNumber(key);
-        } else if(inRange(event.which, keyRanges.letterKeys)) {
-
-        } else if(inRange(event.which, keyRanges.miscKeys)) {
-          self._gameEngine.processMiscKey(event.which);
-        }
+        self.delegateKeyStroke(event.which);
       });
+    },
+    delegateKeyStroke: function(eventCode) {
+      var key = String.fromCharCode(eventCode);
+      if(inRange(eventCode, keyRanges.numberKeys)) {
+        this._gameEngine.processNumber(key);
+      } else if(inRange(eventCode, keyRanges.letterKeys)) {
+
+      } else if(inRange(eventCode, keyRanges.miscKeys)) {
+        this._gameEngine.processMiscKey(eventCode);
+      }
     },
     initializeGameEngine: function() {
       this._gameEngine.initialize();
