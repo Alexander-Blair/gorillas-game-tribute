@@ -1,10 +1,9 @@
 (function(exports) {
   'use strict';
 
-  function Animator(canvasContext) {
+  function Animator(canvasContext, spriteSheet) {
     this.canvasContext = canvasContext;
-    this.spriteSheet = new Image();
-    this.spriteSheet.src = "./images/gorillasSpritesheet.png";
+    this.spriteSheet = spriteSheet;
   }
 
   Animator.prototype = {
