@@ -1,51 +1,30 @@
 'use strict';
 
-describe("Collision Detector", function() {
-  var collisionDetector, mockRectangle;
-  var leftHitBanana, rightHitBanana, topHitBanana;
-  var leftMissBanana, rightMissBanana, topMissBanana;
+describe("Banana Collision Detector", function() {
 
-  mockRectangle = {
-    leftXCoord: 100,
-    topYCoord: 450,
-    width: 100,
-    height: 150
-  }
-  function MockBanana(xCoord, yCoord) {
-    this.xCoord = xCoord;
-    this.yCoord = yCoord;
-  }
+  var collisionDetector = new CollisionDetector();
 
-  leftHitBanana = new MockBanana(100, 500);
-  rightHitBanana = new MockBanana(200, 500);
-  topHitBanana = new MockBanana(150, 450);
+  var tileMap = [
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0]
+  ]
 
-  leftMissBanana = new MockBanana(50, 500);
-  rightMissBanana = new MockBanana(250, 500);
-  topMissBanana = new MockBanana(150, 400);
+  describe("Convert Coords", function () {
 
-  collisionDetector = new CollisionDetector()
+    it("correctly identifies a set of coordinates as being in a building", function() {
+      expect(collisionDetector.convertCoords([200, 350])).toEqual([7, 4]);
+    });
 
-  describe("collision", function() {
-    it("detects a hit to the left side", function() {
-      expect(collisionDetector.isHit(mockRectangle, leftHitBanana)).toBe(true);
-    });
-    it("detects a hit to the right side", function() {
-      expect(collisionDetector.isHit(mockRectangle, rightHitBanana)).toBe(true);
-    });
-    it("detects a hit to the top side", function() {
-      expect(collisionDetector.isHit(mockRectangle, topHitBanana)).toBe(true);
-    });
-  });
-  describe("not a collision", function() {
-    it("detects a hit to the left side", function() {
-      expect(collisionDetector.isHit(mockRectangle, leftMissBanana)).toBe(false);
-    });
-    it("detects a hit to the right side", function() {
-      expect(collisionDetector.isHit(mockRectangle, rightMissBanana)).toBe(false);
-    });
-    it("detects a hit to the top side", function() {
-      expect(collisionDetector.isHit(mockRectangle, topMissBanana)).toBe(false);
+    it("correctly identifies a set of coordinates as being in open air", function() {
+      expect(collisionDetector.convertCoords([50, 50])).toEqual([1, 1]);
     });
   });
 });
