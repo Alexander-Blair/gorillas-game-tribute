@@ -1,11 +1,14 @@
 (function(exports) {
   'use strict';
 
+  var width = 15;
+  var height = 15;
+
   function Banana(xCoord, yCoord) {
     this._xCoord = xCoord;
     this._yCoord = yCoord;
-    this._width = 20;
-    this._height = 20;
+    this._width = width;
+    this._height = height;
   }
 
   Banana.prototype = {

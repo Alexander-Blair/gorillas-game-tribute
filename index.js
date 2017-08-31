@@ -22,8 +22,8 @@
 
   terrainRenderer = new TerrainRenderer(canvasContext, spriteSheet);
   terrainConstructor = Terrain;
-  bananaRenderer = new BananaRenderer(canvasContext);
-  gorillaRenderer = new Animator(canvasContext, spriteSheet);
+  bananaRenderer = new BananaRenderer(canvasContext, spriteSheet);
+  gorillaRenderer = new GorillaRenderer(canvasContext, spriteSheet);
   wind = new Wind();
 
   gameEngine = new GameEngine(canvasElement,

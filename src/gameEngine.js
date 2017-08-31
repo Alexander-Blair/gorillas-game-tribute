@@ -148,20 +148,25 @@
     },
     drawVelocity: function() {
       this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.fillStyle = 'white';
       this.canvasContext.fillText("Velocity: " + velocity + "_", 10, 100);
     },
     drawAngle: function() {
       this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.fillStyle = 'white';
       var text = "Angle: " + angle;
       if(!gotAngle) { text += "_"; }
       this.canvasContext.fillText(text, 10, 50);
     },
     drawWind: function(terrainUnitWidth, terrainUnitHeight) {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'yellow';
+      var width = this.canvasContext.measureText(this._wind.windArrow).width
+      this.canvasContext.fillStyle = 'white';
+      this.canvasContext.fillRect(this._wind.x, this._wind.y - 25, (width * 2), 30);
+      this.canvasContext.font = 'bold 20pt Futura';
+      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.strokeStyle = 'white';
       this.canvasContext.fillText(this._wind.windArrow, this._wind.x, this._wind.y);
+      this.canvasContext.strokeText(this._wind.windArrow, this._wind.x, this._wind.y);
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||

@@ -3,7 +3,7 @@
 
   function TerrainRenderer(context, spriteSheet) {
     this.context = context;
-    this.spriteSheet = spriteSheet
+    this.spriteSheet = spriteSheet;
   }
 
   TerrainRenderer.prototype = {
@@ -22,8 +22,8 @@
     },
     fillBlocks: function(coordArray, colourArray) {
       for(var i = 0;i < coordArray.length;i ++){
-        var colour = colourArray[i + 1]
-        this.drawBuilding(coordArray[i][0], coordArray[i][1], colour)
+        var colour = colourArray[i + 1];
+        this.drawBuilding(coordArray[i][0], coordArray[i][1], colour);
       }
     },
     drawBuilding: function(x, y, colour) {
