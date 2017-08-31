@@ -47,11 +47,12 @@
     }
   });
 
-  terrain = new Terrain(terrainUnitWidth, terrainUnitHeight);
-  terrainRenderer = new TerrainRenderer(context);
+  var terrain = new Terrain(terrainUnitWidth, terrainUnitHeight);
+  var terrainRenderer = new TerrainRenderer(context);
   terrain.generate();
-  terrainTileArray = terrain.tileArray;
-  terrainCoordArray = terrainRenderer.generateCoordArray(terrainTileArray);
+  var colourArray = terrain.colourArray;
+  var terrainTileArray = terrain.tileArray;
+  var terrainCoordArray = terrainRenderer.generateCoordArray(terrainTileArray);
 
   // draw functions to be extracted
   function drawText() {
@@ -79,7 +80,7 @@
     context.clearRect(0, 0, canvas.width, canvas.height);
     drawText();
     drawBall();
-    terrainRenderer.fillBlocks(terrainCoordArray);
+    terrainRenderer.fillBlocks(terrainCoordArray, colourArray);
     if(dx + airResistance < 0) {
       banana.xCoord += dx + airResistance;
     }
