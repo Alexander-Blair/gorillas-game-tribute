@@ -14,13 +14,13 @@
       var widthArray = this.generateWidthArray();
       var buildingCount = widthArray.length;
       var heightArray = this.generateHeightArray(buildingCount);
-      var colours = ['#877B75','#6B151C','#949687','#666F7C'];
+      var colours = [265, 815, 215];
 
       var x = 0;
-      this.colourArray.push(colours[randombetween(0, 3)]);
+      this.colourArray.push(colours[randombetween(0, 2)]);
 
       for(var i = 0; i < buildingCount; i ++) {
-        var buildingColour = colours[randombetween(0, 3)];
+        var buildingColour = colours[randombetween(0, 2)];
         for(var width = widthArray[i]; width > 0; width --) {
           var y = tileArray.length - 1;
           for(var height = heightArray[i]; height > 0; height --) {
