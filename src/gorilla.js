@@ -1,14 +1,16 @@
 (function(exports) {
   'use strict';
 
-  function Gorilla(xCoord, yCoord) {
-    this._xCoord = xCoord;
-    this._yCoord = yCoord;
+  function Gorilla() {
     this._width = 50;
     this._height = 50;
   }
 
   Gorilla.prototype = {
+    set: function(xCoord, yCoord) {
+      this._xCoord = xCoord;
+      this._yCoord = yCoord;
+    },
     xCoord: function() {
       return this._xCoord;
     },
@@ -22,6 +24,6 @@
       return this._height;
     }
   };
-  
+
   exports.Gorilla = Gorilla;
 })(this);

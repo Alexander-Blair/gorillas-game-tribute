@@ -1,6 +1,6 @@
 (function(exports) {
   'use strict';
-  
+
   var run, dx, dy, gravity, gotAngle, velocity, angle;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray;
@@ -13,16 +13,16 @@
   angle = '';
 
   // THIS SHOULD ALL BE EXTRACTED
-  var bananaStartXCoord = 860;
-  var bananaStartYCoord = 540;
-  var gorillas = [];
-  gorillas.push(new Gorilla(800, 550));
-  gorillas.push(new Gorilla(200, 550));
+  var bananaStartYCoord = (terrainUnitHeight * 50) - 140;
+  var bananaStartXCoord = (terrainUnitWidth * 50) - 40;
+  var gorillaStartYCoords = [(terrainUnitHeight * 50) - 100, (terrainUnitHeight * 50) - 100];
+  var gorillaStartXCoords = [100, (terrainUnitWidth * 50) - 100];
   // To here
 
   function GameEngine(canvas,
                       canvasContext,
                       banana,
+                      gorillas,
                       gorillaCollisionDetector,
                       buildingCollisionDetector,
                       gorillaRenderer,
@@ -32,6 +32,7 @@
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
+    this._gorillas = gorillas;
     this._gorillaCollisionDetector = gorillaCollisionDetector;
     this._buildingCollisionDetector = buildingCollisionDetector;
     this._gorillaRenderer = gorillaRenderer;
@@ -45,6 +46,9 @@
       this.generateLandscape();
       var self = this;
       setInterval(function(){self.gameLoop();}, 20);
+      for(var i = 0; i <= 1; i ++) {
+        this._gorillas[i].set(gorillaStartXCoords[i], gorillaStartYCoords[i]);
+      }
     },
     generateLandscape: function() {
       var terrain, terrainTileArray;
@@ -56,13 +60,14 @@
     },
     // THIS IS TO BE REFACTORED!!
     gameLoop: function() {
+      var gorillas = this._gorillas;
+      var banana = this._banana;
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
       this._gorillaRenderer.drawGorillas(gorillas);
-      var banana = this._banana;
 
       if (run === true) {
-        if(this._gorillaCollisionDetector.isHit(gorillas[1], banana)) {
+        if(this._gorillaCollisionDetector.isHit(gorillas[0], banana)) {
           run = false;
           return;
         }

@@ -20,9 +20,9 @@
       this.colourArray.push(colours[randombetween(0, 3)]);
 
       for(var i = 0; i < buildingCount; i ++) {
-        buildingColour = colours[randombetween(0, 3)];
+        var buildingColour = colours[randombetween(0, 3)];
         for(var width = widthArray[i]; width > 0; width --) {
-          y = tileArray.length - 1;
+          var y = tileArray.length - 1;
           for(var height = heightArray[i]; height > 0; height --) {
             tileArray[y][x] = 1;
             this.colourArray.push(buildingColour);
@@ -55,7 +55,7 @@
     },
     generateHeightArray: function(length) {
       var heightArray = [];
-      i = 0;
+      var i = 0;
       while(heightArray.length < length) {
         if (i === 0 || i === length - 1) { heightArray[i] = randombetween(3, 4); }
         else if (i === 1 || i === length - 2) { heightArray[i] = randombetween(2, 5); }

@@ -4,12 +4,16 @@
   var gameController, gameEngine;
   var gorillaCollisionDetector, buildingCollisionDetector;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
-  var banana, canvasElement, canvasContext, windowObject;
+  var banana, gorillas, canvasElement, canvasContext, windowObject;
   windowObject = window;
   canvasElement = document.getElementById("canvas");
   canvasContext = canvasElement.getContext('2d');
 
   banana = new Banana();
+  gorillas = [];
+  gorillas.push(new Gorilla());
+  gorillas.push(new Gorilla());
+
   gorillaCollisionDetector = new GorillaCollisionDetector();
   // buildingCollisionDetector = new BuildingCollisionDetector;
   buildingCollisionDetector = {};
@@ -21,6 +25,7 @@
   gameEngine = new GameEngine(canvasElement,
                               canvasContext,
                               banana,
+                              gorillas,
                               gorillaCollisionDetector,
                               buildingCollisionDetector,
                               gorillaRenderer,
