@@ -68,21 +68,11 @@
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
-
       this.drawEverything(gorillas);
       if (run === true) {
         for(var i = 0; i < 2; i++) {
-          if(this.isGorillaHit(banana, gorillas[i])) {
-            run = false;
-            this._game.switchTurn()
-            this._game.updateScore(gorillas[i])
-            if(this._game.isGameOver()) {
-              this.endGame(this._game.winner())
-              return;
-            } else {
-              this.generateFixtures()
-            }
-            return;
+          if(this.isGorillaHit(banana, gorilla)) {
+            this.processGorillaCollision(gorillas[i])
           }
         }
         if(this.hasBananaStopped(banana)) {
@@ -98,6 +88,16 @@
         if(gotAngle) {
           this._updateDisplay.drawVelocity(velocity, this.textXCoord());
         }
+      }
+    },
+    processGorillaCollision: function(banana, gorilla) {
+      run = false;
+      this._game.switchTurn()
+      this._game.updateScore(gorilla)
+      if(this._game.isGameOver()) {
+        this.endGame(this._game.winner())
+      } else {
+        this.generateFixtures()
       }
     },
     drawEverything: function(gorillas) {
