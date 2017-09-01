@@ -46,6 +46,7 @@
     drawNames: function(player1Name, player2Name) {
       this.canvasContext.font = "16px Arial";
       this.canvasContext.fillStyle = 'white';
+      this.canvasContext.textAlign = 'left';
       this.canvasContext.fillText(player1Name, 10, 30);
       this.canvasContext.fillText(player2Name, 1000, 30);
     },
