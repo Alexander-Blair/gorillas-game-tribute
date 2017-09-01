@@ -90,15 +90,14 @@
           }
         }
         if(this.hasBananaStopped(banana)) {
-          this._game.switchTurn();
+          this._bananaRenderer.explode(banana);
           run = "explosion";
+          this._game.switchTurn();
           return;
         }
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
       } else if (run === "explosion") {
-        this.waitForInput();
-        this._bananaRenderer.explode(banana);
         this._bananaRenderer.drawBanana(banana);
         setTimeout(function(){
           run = false;
@@ -128,6 +127,7 @@
       return this._gorillaCollisionDetector.isHit(gorilla, banana);
     },
     startGameLoop: function(angle, velocity) {
+      this._bananaRenderer.reset();
       var xCoord, yCoord;
       if(this._game.isPlayerOne()) {
         xCoord = this._gorillas[0].xCoord() - 10
