@@ -37,10 +37,8 @@
 
   Game.prototype.updateScore = function(gorilla) {
     if(this.player1.gorilla === gorilla) {
-      console.log('why u here')
       this.player2.incrementScore();
     } else {
-      console.log('success')
       this.player1.incrementScore();
     }
     if(this.isGameOver()) {
