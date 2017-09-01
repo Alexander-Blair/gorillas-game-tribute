@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var gameController, gameEngine;
+  var gameController, gameEngine, game, player1, player2;
   var gorillaCollisionDetector, buildingCollisionDetector;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
   var banana, gorillas, canvasElement, canvasContext, windowObject, wind;
@@ -13,6 +13,13 @@
   gorillas = [];
   gorillas.push(new Gorilla({ isPlayerOne: true } ));
   gorillas.push(new Gorilla({ isPlayerOne: false } ));
+
+  player1 = new Player("Dave", gorillas[0]);
+  player2 = new Player("Jim", gorillas[1]);
+
+  game = new Game(player1, player2);
+
+  console.log(game)
 
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
@@ -36,7 +43,9 @@
                               bananaRenderer,
                               terrainRenderer,
                               terrainConstructor,
+                              game,
                               wind);
+
 
   gameController = new GameController(windowObject,
                                       gameEngine);
