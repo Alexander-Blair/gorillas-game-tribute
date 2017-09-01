@@ -50,8 +50,9 @@
 
     generateFixtures: function() {
       this.generateLandscape();
-      this._wind.generateWind();
-      this._wind.generateWindArrow(terrainUnitWidth, terrainUnitHeight);
+      this._wind.generateWind(terrainUnitWidth, terrainUnitHeight);
+
+      var self = this;
       for(var i = 0; i <= 1; i ++) {
         var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
                                                       terrainUnitWidth,
@@ -209,15 +210,19 @@
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;
     },
-    drawWind: function(terrainUnitWidth, terrainUnitHeight) {
-      var width = this.canvasContext.measureText(this._wind.windArrow).width
+    drawWind: function() {
+      var wind = this._wind;
       this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillRect(this._wind.x, this._wind.y - 25, (width * 2), 30);
-      this.canvasContext.font = 'bold 20pt Futura';
+      var arrowlength = (wind.wind * 1000);
+      if(wind.wind > 0) {
+        this.canvasContext.rect(wind.x - 10, wind.y - 15, arrowlength + 25, 30);
+      } else {
+        this.canvasContext.rect(wind.x + 10, wind.y - 15, arrowlength - 25, 30);
+      }
+      this.canvasContext.fill();
       this.canvasContext.fillStyle = 'black';
-      this.canvasContext.strokeStyle = 'white';
-      this.canvasContext.fillText(this._wind.windArrow, this._wind.x, this._wind.y);
-      this.canvasContext.strokeText(this._wind.windArrow, this._wind.x, this._wind.y);
+      this.canvasContext.stroke();
+      wind.drawArrow(this.canvasContext, wind.x, wind.y, (wind.x + wind.wind * 1000), wind.y);
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||
