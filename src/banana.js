@@ -16,6 +16,10 @@
       this._xCoord = xCoord;
       this._yCoord = yCoord;
     },
+    move: function(xCoord, yCoord) {
+      this._xCoord += xCoord;
+      this._yCoord += yCoord;
+    },
     xCoord: function() {
       return this._xCoord;
     },

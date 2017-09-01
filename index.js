@@ -19,6 +19,8 @@
 
   game = new Game(player1, player2);
 
+  console.log(game)
+
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
 

@@ -1,5 +1,6 @@
 (function(exports){
 
+  var winningScore = 2;
   function Game(player1, player2) {
     this.player1      = player1;
     this.player2      = player2;
@@ -11,7 +12,7 @@
   }
 
   Game.prototype.switchTurn = function() {
-    this.isPlayerOne = !this.isPlayerOne;
+    this._isPlayerOne = !this._isPlayerOne;
   }
 
   Game.prototype.endGame = function() {
@@ -23,7 +24,11 @@
   }
 
   Game.prototype.isGameOver = function() {
-    return this.player1.score >= 2 || this.player2.score >= 2
+    return this.player1.score() >= winningScore || this.player2.score() >= winningScore
+  }
+
+  Game.prototype.winner = function() {
+    return this.player1.score() >= winningScore ? this.player1 : this.player2;
   }
 
   Game.prototype.isPlayerOne = function() {
@@ -32,8 +37,10 @@
 
   Game.prototype.updateScore = function(gorilla) {
     if(this.player1.gorilla === gorilla) {
+      console.log('why u here')
       this.player2.incrementScore();
     } else {
+      console.log('success')
       this.player1.incrementScore();
     }
     if(this.isGameOver()) {
