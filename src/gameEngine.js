@@ -265,8 +265,8 @@
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||
-        this._banana.xCoord() + this._banana.width() < 0 ||
-        this._banana.xCoord() > (terrainUnitWidth * 50)) {
+        this._banana.xCoord() + this._banana.width() + 100 < 0 ||
+        this._banana.xCoord() - 100 > (terrainUnitWidth * 50)) {
         return true;
       }
     },
