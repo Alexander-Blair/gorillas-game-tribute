@@ -8,14 +8,15 @@
                               xCoord,
                               playerOneName,
                               playerTwoName,
-                              gotPlayerOneName) {
+                              gotPlayerOneName,
+                              gotPlayerTwoName,
+                              bestOf) {
       this.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
       this.canvasContext.fillStyle = "black";
       this.canvasContext.fillRect(0, 0, canvas.width, canvas.height);
       this.drawPlayerName(playerOneName, 1, xCoord);
-      if(gotPlayerOneName) {
-        this.drawPlayerName(playerTwoName, 2, xCoord);
-      }
+      if(gotPlayerOneName) { this.drawPlayerName(playerTwoName, 2, xCoord); }
+      if(gotPlayerTwoName) { this.drawBestOf(bestOf, xCoord) };
     },
     drawPlayerName: function(name, playerNumber, xCoord) {
       this.canvasContext.font = "16px Arial";
@@ -25,6 +26,12 @@
       var yCoord = playerNumber === 1 ? 200 : 300
       var text = "Player " + number + " (default: 'Player" + playerNumber + "'): " + name +  "_"
       this.canvasContext.fillText(text, xCoord , yCoord);
+    },
+    drawBestOf: function(bestOf, xCoord) {
+      this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'white';
+      this.canvasContext.textAlign = 'center';
+      this.canvasContext.fillText("Best of (default: 3): " + bestOf, xCoord , 400);
     },
     drawVelocity: function(velocity, xCoord) {
       this.canvasContext.font = "16px Arial";
