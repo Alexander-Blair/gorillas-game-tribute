@@ -121,7 +121,7 @@
                 run = false;
               }
               return;
-            }, 1000);
+            }, 1400);
           }
         }
         if(this.hasBananaStopped(banana)) {
@@ -134,7 +134,6 @@
         this._bananaRenderer.drawBanana(banana);
       } else if (run === "gorilladead") {
       } else if (run === "explosion") {
-        console.log("test")
         this._bananaRenderer.drawBanana(banana);
         setTimeout(function(){
           run = false;
