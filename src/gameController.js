@@ -18,13 +18,13 @@
       if(inRange(eventCode, keyRanges.numberKeys)) {
         this._gameEngine.processNumber(key);
       } else if(inRange(eventCode, keyRanges.letterKeys)) {
-
+        this._gameEngine.processLetter(key);
       } else if(inRange(eventCode, keyRanges.miscKeys)) {
         this._gameEngine.processMiscKey(eventCode);
       }
     },
     initializeGameEngine: function() {
-      this._gameEngine.initialize();
+      this._gameEngine.intro();
     }
   };
 
