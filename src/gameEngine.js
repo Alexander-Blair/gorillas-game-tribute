@@ -1,10 +1,17 @@
 (function(exports) {
   'use strict';
 
+  var intro, gotPlayerOneName;
+  var playerOneName, playerTwoName;
   var run, dx, dy, gravity, gotAngle, velocity, angle, wind, airResistance;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray, terrainTileArray;
-  var loopInterval;
+  var loopInterval, introInterval;
+
+  intro = true;
+  gotPlayerOneName = false;
+  playerOneName = '';
+  playerTwoName = '';
 
   run = false;
   airResistance = 0;
@@ -43,12 +50,17 @@
   }
 
   GameEngine.prototype = {
+    intro: function() {
+      var self = this;
+      introInterval = setInterval(function(){ self.introLoop(); }, 20);
+    },
     initialize: function() {
+      if(playerOneName.length > 0) { this._game.player1.setName(playerOneName); }
+      if(playerTwoName.length > 0) { this._game.player2.setName(playerTwoName); }
       this.generateFixtures();
       var self = this;
       loopInterval = setInterval(function(){ self.gameLoop(); }, 20);
     },
-
     generateFixtures: function() {
       this.generateLandscape();
       this._wind.generateWind(terrainUnitWidth, terrainUnitHeight);
@@ -67,7 +79,19 @@
       terrainTileArray = newTerrain.tileArray;
       terrainCoordArray = this._terrainRenderer.generateCoordArray(terrainTileArray);
     },
-    // THIS IS TO BE REFACTORED!!
+    introLoop: function() {
+      if(!intro) {
+        clearInterval(introInterval)
+        this.initialize();
+        return;
+      }
+      var xCoord = toCoords(terrainUnitWidth) / 2;
+      this._updateDisplay.drawIntroScreen(this.canvas,
+                                          xCoord,
+                                          playerOneName,
+                                          playerTwoName,
+                                          gotPlayerOneName)
+    },
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
@@ -76,16 +100,7 @@
       if (run === true) {
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
-            run = false;
-            this._game.switchTurn()
-            this._game.updateScore(gorillas[i])
-            if(this._game.isGameOver()) {
-              this.endGame(this._game.winner())
-              return;
-            } else {
-              this.generateFixtures()
-            }
-            return;
+            this.processGorillaCollision(gorillas[i])
           }
         }
         if(this.hasBananaStopped(banana)) {
@@ -162,6 +177,12 @@
       if(gotAngle) { velocity += key; }
       else { angle += key; }
     },
+    processLetter: function(key) {
+      if(intro) {
+        if(gotPlayerOneName) { playerTwoName += key; }
+        else { playerOneName += key; }
+      }
+    },
     processMiscKey: function(keyCode) {
       if(keyCode === 13) {
         this.processEnter();
@@ -170,18 +191,43 @@
       }
     },
     processBackspace: function() {
-      if(gotAngle) {
-        velocity = velocity.substring(0, velocity.length - 1);
+      if(intro) {
+        this.processIntroBackspace();
       } else {
-        angle = angle.substring(0, angle.length - 1);
+        this.processGameBackSpace();
       }
     },
+    processGameBackSpace: function() {
+      if(gotAngle) {
+        velocity = this.deleteLastChar(velocity)
+      } else {
+        angle = this.deleteLastChar(angle)
+      }
+    },
+    processIntroBackspace: function() {
+      if(gotPlayerOneName) {
+        playerTwoName = this.deleteLastChar(playerTwoName)
+      } else {
+        playerOneName = this.deleteLastChar(playerOneName)
+      }
+    },
+    deleteLastChar: function(item) {
+      return item.substring(0, item.length - 1);
+    },
     processEnter: function() {
+      intro ? this.processIntroEnter() : this.processGameEnter();
+    },
+    processGameEnter: function() {
       if(gotAngle && velocity.length > 0) {
         this.startGameLoop(angle, velocity);
       } else if(!gotAngle && angle.length > 0) {
         gotAngle = true;
       }
+    },
+    processIntroEnter: function() {
+      if(gotPlayerOneName) {
+        intro = false;
+      } else { gotPlayerOneName = true; }
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;

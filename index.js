@@ -14,8 +14,8 @@
   gorillas.push(new Gorilla({ isPlayerOne: true } ));
   gorillas.push(new Gorilla({ isPlayerOne: false } ));
 
-  player1 = new Player("Dave", gorillas[0]);
-  player2 = new Player("Jim", gorillas[1]);
+  player1 = new Player("Player1", gorillas[0]);
+  player2 = new Player("Player2", gorillas[1]);
 
   game = new Game(player1, player2);
 

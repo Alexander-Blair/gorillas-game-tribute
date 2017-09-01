@@ -4,6 +4,28 @@
   }
 
   UpdateDisplay.prototype = {
+    drawIntroScreen: function(canvas,
+                              xCoord,
+                              playerOneName,
+                              playerTwoName,
+                              gotPlayerOneName) {
+      this.canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+      this.canvasContext.fillStyle = "black";
+      this.canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+      this.drawPlayerName(playerOneName, 1, xCoord);
+      if(gotPlayerOneName) {
+        this.drawPlayerName(playerTwoName, 2, xCoord);
+      }
+    },
+    drawPlayerName: function(name, playerNumber, xCoord) {
+      this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'white';
+      this.canvasContext.textAlign = 'center';
+      var number = playerNumber === 1 ? "One" : "Two";
+      var yCoord = playerNumber === 1 ? 200 : 300
+      var text = "Player " + number + " (default: 'Player" + playerNumber + "'): " + name +  "_"
+      this.canvasContext.fillText(text, xCoord , yCoord);
+    },
     drawVelocity: function(velocity, xCoord) {
       this.canvasContext.font = "16px Arial";
       this.canvasContext.fillStyle = 'white';
