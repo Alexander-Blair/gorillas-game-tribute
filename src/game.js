@@ -34,10 +34,8 @@
 
   Game.prototype.updateScore = function(gorilla) {
     if(this.player1.gorilla === gorilla) {
-
       this.player2.incrementScore();
     } else {
-
       this.player1.incrementScore();
     }
   }

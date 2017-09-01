@@ -2,7 +2,7 @@
   'use strict';
 
   var gameController, gameEngine, game, player1, player2;
-  var gorillaCollisionDetector, buildingCollisionDetector;
+  var gorillaCollisionDetector, buildingCollisionDetector, updateDisplay;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
   var banana, gorillas, canvasElement, canvasContext, windowObject, wind;
   windowObject = window;
@@ -14,8 +14,8 @@
   gorillas.push(new Gorilla({ isPlayerOne: true } ));
   gorillas.push(new Gorilla({ isPlayerOne: false } ));
 
-  player1 = new Player("Dave", gorillas[0]);
-  player2 = new Player("Jim", gorillas[1]);
+  player1 = new Player("Player1", gorillas[0]);
+  player2 = new Player("Player2", gorillas[1]);
 
 
   gorillaCollisionDetector = new GorillaCollisionDetector();
@@ -31,6 +31,7 @@
   bananaRenderer = new BananaRenderer(canvasContext, spriteSheet);
   gorillaRenderer = new GorillaRenderer(canvasContext, spriteSheet);
   wind = new Wind();
+  updateDisplay = new UpdateDisplay(canvasContext);
 
   gameEngine = new GameEngine(canvasElement,
                               canvasContext,
@@ -43,7 +44,8 @@
                               terrainRenderer,
                               terrainConstructor,
                               game,
-                              wind);
+                              wind,
+                              updateDisplay);
 
 
   gameController = new GameController(windowObject,

@@ -1,10 +1,17 @@
 (function(exports) {
   'use strict';
 
+  var intro, gotPlayerOneName;
+  var playerOneName, playerTwoName;
   var run, dx, dy, gravity, gotAngle, velocity, angle, wind, airResistance;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray, terrainTileArray;
-  var loopInterval;
+  var loopInterval, introInterval;
+
+  intro = true;
+  gotPlayerOneName = false;
+  playerOneName = '';
+  playerTwoName = '';
 
   run = false;
   airResistance = 0;
@@ -25,7 +32,8 @@
                       terrainRenderer,
                       terrainConstructor,
                       game,
-                      wind) {
+                      wind,
+                      updateDisplay) {
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
@@ -38,21 +46,24 @@
     this._terrainConstructor = terrainConstructor;
     this._game = game;
     this._wind = wind;
-
+    this._updateDisplay = updateDisplay;
   }
 
   GameEngine.prototype = {
+    intro: function() {
+      var self = this;
+      introInterval = setInterval(function(){ self.introLoop(); }, 20);
+    },
     initialize: function() {
+      if(playerOneName.length > 0) { this._game.player1.setName(playerOneName); }
+      if(playerTwoName.length > 0) { this._game.player2.setName(playerTwoName); }
       this.generateFixtures();
       var self = this;
-      loopInterval = setInterval(function(){self.gameLoop();}, 20);
+      loopInterval = setInterval(function(){ self.gameLoop(); }, 20);
     },
-
     generateFixtures: function() {
       this.generateLandscape();
       this._wind.generateWind(terrainUnitWidth, terrainUnitHeight);
-
-      var self = this;
       for(var i = 0; i <= 1; i ++) {
         var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
                                                       terrainUnitWidth,
@@ -61,14 +72,25 @@
       }
     },
     generateLandscape: function() {
-      var terrain;
-      terrain = this._terrainConstructor;
-      newTerrain = new terrain(terrainUnitWidth, terrainUnitHeight);
+      newTerrain = new this._terrainConstructor(terrainUnitWidth, terrainUnitHeight);
       newTerrain.generate();
       terrainTileArray = newTerrain.tileArray;
       terrainCoordArray = this._terrainRenderer.generateCoordArray(terrainTileArray);
     },
-    // THIS IS TO BE REFACTORED!!
+
+    introLoop: function() {
+      if(!intro) {
+        clearInterval(introInterval)
+        this.initialize();
+        return;
+      }
+      var xCoord = toCoords(terrainUnitWidth) / 2;
+      this._updateDisplay.drawIntroScreen(this.canvas,
+                                          xCoord,
+                                          playerOneName,
+                                          playerTwoName,
+                                          gotPlayerOneName)
+    },
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
@@ -103,10 +125,20 @@
         this._bananaRenderer.drawBanana(banana);
       } else {
         this.waitForInput();
-        this.drawAngle();
+        this._updateDisplay.drawAngle(angle, gotAngle, this.textXCoord());
         if(gotAngle) {
-          this.drawVelocity();
+          this._updateDisplay.drawVelocity(velocity, this.textXCoord());
         }
+      }
+    },
+    processGorillaCollision: function(banana, gorilla) {
+      run = false;
+      this._game.switchTurn()
+      this._game.updateScore(gorilla)
+      if(this._game.isGameOver()) {
+        this.endGame(this._game.winner())
+      } else {
+        this.generateFixtures()
       }
     },
     drawEverything: function(gorillas) {
@@ -114,9 +146,9 @@
       this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
       this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
       this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
-      this.drawWind();
-      this.drawScore();
-      this.drawNames();
+      this._updateDisplay.drawWind(this._wind);
+      this._updateDisplay.drawScore(this._game.score(), toCoords(terrainUnitWidth) / 2);
+      this._updateDisplay.drawNames(this._game.player1.name(), this._game.player2.name());
     },
     hasBananaStopped: function(banana) {
       return this._buildingCollisionDetector.isHit(banana, terrainTileArray) ||
@@ -168,6 +200,12 @@
       if(gotAngle) { velocity += key; }
       else { angle += key; }
     },
+    processLetter: function(key) {
+      if(intro) {
+        if(gotPlayerOneName) { playerTwoName += key; }
+        else { playerOneName += key; }
+      }
+    },
     processMiscKey: function(keyCode) {
       if(keyCode === 13) {
         this.processEnter();
@@ -176,58 +214,46 @@
       }
     },
     processBackspace: function() {
-      if(gotAngle) {
-        velocity = velocity.substring(0, velocity.length - 1);
+      if(intro) {
+        this.processIntroBackspace();
       } else {
-        angle = angle.substring(0, angle.length - 1);
+        this.processGameBackSpace();
       }
     },
+    processGameBackSpace: function() {
+      if(gotAngle) {
+        velocity = this.deleteLastChar(velocity)
+      } else {
+        angle = this.deleteLastChar(angle)
+      }
+    },
+    processIntroBackspace: function() {
+      if(gotPlayerOneName) {
+        playerTwoName = this.deleteLastChar(playerTwoName)
+      } else {
+        playerOneName = this.deleteLastChar(playerOneName)
+      }
+    },
+    deleteLastChar: function(item) {
+      return item.substring(0, item.length - 1);
+    },
     processEnter: function() {
+      intro ? this.processIntroEnter() : this.processGameEnter();
+    },
+    processGameEnter: function() {
       if(gotAngle && velocity.length > 0) {
         this.startGameLoop(angle, velocity);
       } else if(!gotAngle && angle.length > 0) {
         gotAngle = true;
       }
     },
-    drawVelocity: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText("Velocity: " + velocity + "_", this.textXCoord(), 110);
-    },
-    drawAngle: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      var text = "Angle: " + angle;
-      if(!gotAngle) { text += "_"; }
-      this.canvasContext.fillText(text, this.textXCoord(), 70);
-    },
-    drawScore: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText(this._game.score(), toCoords(terrainUnitWidth) / 2, 30);
-    },
-    drawNames: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText(this._game.player1.name(), 10, 30);
-      this.canvasContext.fillText(this._game.player2.name(), 1000, 30);
+    processIntroEnter: function() {
+      if(gotPlayerOneName) {
+        intro = false;
+      } else { gotPlayerOneName = true; }
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;
-    },
-    drawWind: function() {
-      var wind = this._wind;
-      this.canvasContext.fillStyle = 'white';
-      var arrowlength = (wind.wind * 1000);
-      if(wind.wind > 0) {
-        this.canvasContext.rect(wind.x - 10, wind.y - 15, arrowlength + 25, 30);
-      } else {
-        this.canvasContext.rect(wind.x + 10, wind.y - 15, arrowlength - 25, 30);
-      }
-      this.canvasContext.fill();
-      this.canvasContext.fillStyle = 'black';
-      this.canvasContext.stroke();
-      wind.drawArrow(this.canvasContext, wind.x, wind.y, (wind.x + wind.wind * 1000), wind.y);
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||

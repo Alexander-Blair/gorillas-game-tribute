@@ -14,6 +14,10 @@
     return this._name;
   }
 
+  Player.prototype.setName = function(name) {
+    this._name = name;
+  }
+
   Player.prototype.incrementScore = function() {
     this._score += 1;
   }
