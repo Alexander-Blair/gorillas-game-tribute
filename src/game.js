@@ -3,32 +3,41 @@
   function Game(player1, player2) {
     this.player1      = player1;
     this.player2      = player2;
-    this.isPlayerOne = true
-
+    this._isPlayerOne = true
   }
 
   Game.prototype.newRound = function() {
-    gameEngine.generateFixtures();
+    // gameEngine.generateFixtures();
   }
 
   Game.prototype.switchTurn = function() {
     this.isPlayerOne = !this.isPlayerOne;
   }
 
-  Game.prototype.gameOver = function() {
+  Game.prototype.endGame = function() {
     // Game Over screen?
   }
 
+  Game.prototype.score = function() {
+    return this.player1.score() + ':' + this.player2.score();
+  }
+
   Game.prototype.isGameOver = function() {
-    this.player1.score >= 2 || this.player2.score >= 2
+    return this.player1.score >= 2 || this.player2.score >= 2
+  }
+
+  Game.prototype.isPlayerOne = function() {
+    return this._isPlayerOne;
   }
 
   Game.prototype.updateScore = function(gorilla) {
-    if(player1.gorilla === gorilla) {
-      player2.increaseScore();
-    } else { player1.increaseScore(); }
-    if (this.isgameOver()) {
-      this.gameOver();
+    if(this.player1.gorilla === gorilla) {
+      this.player2.incrementScore();
+    } else {
+      this.player1.incrementScore();
+    }
+    if(this.isGameOver()) {
+      this.endGame();
     } else {
       this.newRound();
     }

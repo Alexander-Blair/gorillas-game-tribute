@@ -63,7 +63,10 @@
     generateFixtures: function() {
       this.generateLandscape();
       for(var i = 0; i <= 1; i ++) {
-        this._gorillas[i].set(gorillaStartXCoords[i], gorillaStartYCoords[i]);
+        var tile = this._gorillas[i].chooseRandomTile(terrainTileArray,
+                                                 terrainUnitWidth,
+                                                 terrainUnitHeight);
+        this._gorillas[i].set(toCoords(tile[1]), toCoords(tile[0]))
       }
     },
     generateLandscape: function() {
@@ -87,13 +90,16 @@
 
         for(var i =0; i<2; i ++){
           if(this._gorillaCollisionDetector.isHit(gorillas[i], banana)) {
-            this.game.updateScore(gorillas[i]);
+            this._game.updateScore(gorillas[i]);
+            this._game.switchTurn();
             run = false;
+            this.generateFixtures()
             return;
           }
         }
 
         if(this._buildingCollisionDetector.isHit(banana, terrainTileArray)) {
+          this._game.switchTurn();
           run = false;
           return;
         }
@@ -110,7 +116,16 @@
       }
     },
     startGameLoop: function(angle, velocity) {
-      this._banana.set(this._gorillas[1].xCoord() + 60, this._gorillas[1].yCoord());
+      var xCoord, yCoord;
+      console.log(this._game)
+      if(this._game.isPlayerOne()) {
+        xCoord = this._game.player1.gorilla.xCoord() - 25
+        yCoord = this._game.player1.gorilla.yCoord() - 10
+      } else {
+        xCoord = this._game.player2.gorilla.xCoord() + 60
+        yCoord = this._game.player2.gorilla.yCoord() - 10
+      }
+      this._banana.set(xCoord, yCoord);
       this.setVelocities(angle, velocity);
       run = true;
       this.resetChoices();
