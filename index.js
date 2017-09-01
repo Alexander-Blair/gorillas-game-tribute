@@ -17,13 +17,14 @@
   player1 = new Player("Dave", gorillas[0]);
   player2 = new Player("Jim", gorillas[1]);
 
-  game = new Game(player1, player2);
 
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
 
   var spriteSheet = new Image();
   spriteSheet.src = "./images/gorillasSpritesheet.png";
+
+  game = new Game(player1, player2, spriteSheet);
 
   terrainRenderer = new TerrainRenderer(canvasContext, spriteSheet);
   terrainConstructor = Terrain;

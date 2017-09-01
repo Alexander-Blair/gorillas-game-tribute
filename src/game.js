@@ -1,10 +1,11 @@
 (function(exports){
 
   var winningScore = 2;
-  function Game(player1, player2) {
+  function Game(player1, player2, spriteSheet) {
     this.player1      = player1;
     this.player2      = player2;
     this._isPlayerOne = true
+    this.spriteSheet = spriteSheet;
   }
 
   Game.prototype.newRound = function() {
@@ -45,11 +46,35 @@
 
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     canvasContext.beginPath();
+    canvasContext.fillStyle = 'black';
+    canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+    canvasContext.fill();
+
+    canvasContext.beginPath();
+    canvasContext.drawImage(this.spriteSheet,
+                                715,
+                                0,
+                                50,
+                                50,
+                                canvas.width / 2,
+                                (canvas.height / 2) - 100,
+                                50,
+                                50);
+
+    canvasContext.fill();
+
+    canvasContext.beginPath();
     canvasContext.fillStyle = 'white';
     canvasContext.textAlign = 'center';
     canvasContext.font = "40px 'Press Start 2P'"
-    canvasContext.fillText(winner.name() + " WON!", 600, 400);
+    canvasContext.fillText(winner.name() + " WON!", canvas.width / 2, canvas.height /2);
     canvasContext.fill();
+
+    canvasContext.beginPath();
+    canvasContext.fillStyle = 'white';
+    canvasContext.textAlign = 'center';
+    canvasContext.font = "20px 'Press Start 2P'";
+    canvasContext.fillText("Go Banana's, " + winner.name() + "!", canvas.width / 2, (canvas.height /2 + 100));
   }
 
   exports.Game = Game;
