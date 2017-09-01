@@ -2,7 +2,7 @@
   'use strict';
 
   var gameController, gameEngine, game, player1, player2;
-  var gorillaCollisionDetector, buildingCollisionDetector;
+  var gorillaCollisionDetector, buildingCollisionDetector, updateDisplay;
   var terrainConstructor, terrainRenderer, gorillaRenderer, bananaRenderer;
   var banana, gorillas, canvasElement, canvasContext, windowObject, wind;
   windowObject = window;
@@ -19,8 +19,6 @@
 
   game = new Game(player1, player2);
 
-  console.log(game)
-
   gorillaCollisionDetector = new GorillaCollisionDetector();
   buildingCollisionDetector = new CollisionDetector();
 
@@ -32,6 +30,7 @@
   bananaRenderer = new BananaRenderer(canvasContext, spriteSheet);
   gorillaRenderer = new GorillaRenderer(canvasContext, spriteSheet);
   wind = new Wind();
+  updateDisplay = new UpdateDisplay(canvasContext);
 
   gameEngine = new GameEngine(canvasElement,
                               canvasContext,
@@ -44,7 +43,8 @@
                               terrainRenderer,
                               terrainConstructor,
                               game,
-                              wind);
+                              wind,
+                              updateDisplay);
 
 
   gameController = new GameController(windowObject,

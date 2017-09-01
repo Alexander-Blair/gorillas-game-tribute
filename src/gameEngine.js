@@ -25,7 +25,8 @@
                       terrainRenderer,
                       terrainConstructor,
                       game,
-                      wind) {
+                      wind,
+                      updateDisplay) {
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
@@ -38,21 +39,19 @@
     this._terrainConstructor = terrainConstructor;
     this._game = game;
     this._wind = wind;
-
+    this._updateDisplay = updateDisplay;
   }
 
   GameEngine.prototype = {
     initialize: function() {
       this.generateFixtures();
       var self = this;
-      loopInterval = setInterval(function(){self.gameLoop();}, 20);
+      loopInterval = setInterval(function(){ self.gameLoop(); }, 20);
     },
 
     generateFixtures: function() {
       this.generateLandscape();
       this._wind.generateWind(terrainUnitWidth, terrainUnitHeight);
-
-      var self = this;
       for(var i = 0; i <= 1; i ++) {
         var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
                                                       terrainUnitWidth,
@@ -98,9 +97,9 @@
         this._bananaRenderer.drawBanana(banana);
       } else {
         this.waitForInput();
-        this.drawAngle();
+        this._updateDisplay.drawAngle(angle, gotAngle, this.textXCoord());
         if(gotAngle) {
-          this.drawVelocity();
+          this._updateDisplay.drawVelocity(velocity, this.textXCoord());
         }
       }
     },
@@ -110,8 +109,8 @@
       this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
       this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
       this.drawWind();
-      this.drawScore();
-      this.drawNames();
+      this._updateDisplay.drawScore(this._game.score(), toCoords(terrainUnitWidth) / 2);
+      this._updateDisplay.drawNames(this._game.player1.name(), this._game.player2.name());
     },
     hasBananaStopped: function(banana) {
       return this._buildingCollisionDetector.isHit(banana, terrainTileArray) ||
@@ -183,29 +182,6 @@
       } else if(!gotAngle && angle.length > 0) {
         gotAngle = true;
       }
-    },
-    drawVelocity: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText("Velocity: " + velocity + "_", this.textXCoord(), 110);
-    },
-    drawAngle: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      var text = "Angle: " + angle;
-      if(!gotAngle) { text += "_"; }
-      this.canvasContext.fillText(text, this.textXCoord(), 70);
-    },
-    drawScore: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText(this._game.score(), toCoords(terrainUnitWidth) / 2, 30);
-    },
-    drawNames: function() {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText(this._game.player1.name(), 10, 30);
-      this.canvasContext.fillText(this._game.player2.name(), 1000, 30);
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;
