@@ -48,6 +48,19 @@
       this.canvasContext.fillStyle = 'white';
       this.canvasContext.fillText(player1Name, 10, 30);
       this.canvasContext.fillText(player2Name, 1000, 30);
+    },
+    drawWind: function(wind) {
+      this.canvasContext.fillStyle = 'white';
+      var arrowlength = (wind.wind * 1000);
+      if(wind.wind > 0) {
+        this.canvasContext.rect(wind.x - 10, wind.y - 15, arrowlength + 25, 30);
+      } else {
+        this.canvasContext.rect(wind.x + 10, wind.y - 15, arrowlength - 25, 30);
+      }
+      this.canvasContext.fill();
+      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.stroke();
+      wind.drawArrow(this.canvasContext, wind.x, wind.y, (wind.x + wind.wind * 1000), wind.y);
     }
   }
 
