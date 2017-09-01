@@ -6,16 +6,22 @@
     this.spriteSheet = spriteSheet;
   }
 
-  var shift = 715;
+  var shift1 = 715;
+  var shift2 = 615;
 
   GorillaRenderer.prototype = {
-    throw: function() {
-      shift = shift + 50;
-      setTimeout(function(){ shift = shift - 50; }, 100);
+    throw: function(isPlayerOne) {
+      if(isPlayerOne) {
+        shift2 = shift2 + 50;
+        setTimeout(function(){ shift2 = shift2 - 50; }, 100);
+      } else {
+        shift1 = shift1 + 50;
+        setTimeout(function(){ shift1 = shift1 - 50; }, 100);
+      }
     },
     drawGorilla1: function(x, y) {
       this.canvasContext.drawImage(this.spriteSheet,
-                                  shift,
+                                  shift1,
                                   0,
                                   50,
                                   50,
@@ -26,7 +32,7 @@
     },
     drawGorilla2: function(x, y) {
       this.canvasContext.drawImage(this.spriteSheet,
-                                  615,
+                                  shift2,
                                   0,
                                   50,
                                   50,

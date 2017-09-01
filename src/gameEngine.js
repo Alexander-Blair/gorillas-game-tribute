@@ -78,24 +78,31 @@
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
             run = false;
-            this._game.switchTurn()
-            this._game.updateScore(gorillas[i])
+            this._game.switchTurn();
+            this._game.updateScore(gorillas[i]);
             if(this._game.isGameOver()) {
-              this.endGame(this._game.winner())
+              this.endGame(this._game.winner());
               return;
             } else {
-              this.generateFixtures()
+              this.generateFixtures();
             }
             return;
           }
         }
         if(this.hasBananaStopped(banana)) {
-          this._game.switchTurn()
-          run = false;
+          this._game.switchTurn();
+          run = "explosion";
           return;
         }
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
+      } else if (run === "explosion") {
+        this.waitForInput();
+        this._bananaRenderer.explode(banana);
+        this._bananaRenderer.drawBanana(banana);
+        setTimeout(function(){
+          run = false;
+        }, 1000);
       } else {
         this.waitForInput();
         this.drawAngle();
@@ -131,7 +138,7 @@
       }
       this._banana.set(xCoord, yCoord);
       this.setVelocities(angle, velocity);
-      this._gorillaRenderer.throw();
+      this._gorillaRenderer.throw(this._game.isPlayerOne());
       run = true;
       this.resetChoices();
     },

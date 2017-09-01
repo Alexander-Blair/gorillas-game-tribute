@@ -19,6 +19,19 @@
                                   y,
                                   15,
                                   15);
+    },
+    explode: function(banana) {
+      var x = banana.xCoord();
+      var y = banana.yCoord();
+      this.canvasContext.drawImage(this.spriteSheet,
+                                  0,
+                                  0,
+                                  15,
+                                  15,
+                                  x,
+                                  y,
+                                  15,
+                                  15);
     }
   };
 
