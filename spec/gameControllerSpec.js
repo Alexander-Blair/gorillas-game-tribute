@@ -11,7 +11,7 @@ describe("GameController", function() {
     }
   }
   mockWindow = new MockWindow();
-  mockGameEngine = jasmine.createSpyObj("gameEngine", ["processNumber", "processMiscKey", "initialize"])
+  mockGameEngine = jasmine.createSpyObj("gameEngine", ["processNumber", "processMiscKey", "intro"])
   gameController = new GameController(mockWindow, mockGameEngine)
 
   gameController.setupKeystrokeListener();
@@ -24,7 +24,7 @@ describe("GameController", function() {
 
   gameController.initializeGameEngine();
   it("initializes the game engine", function() {
-    expect(mockGameEngine.initialize).toHaveBeenCalled();
+    expect(mockGameEngine.intro).toHaveBeenCalled();
   });
 
   gameController.delegateKeyStroke(48);
