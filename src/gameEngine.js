@@ -101,40 +101,13 @@
       var gorillas = this._gorillas;
       var banana = this._banana;
       var self = this;
-
       this.drawEverything(gorillas);
       if (run === true) {
-        for(var i = 0; i < 2; i++) {
-          if(this.isGorillaHit(banana, gorillas[i])) {
-            this._gorillaRenderer.kill(i)
-            run = "gorilladead";
-            this._game.switchTurn();
-            this._game.updateScore(gorillas[i]);
-            var self = this
-            setTimeout(function(){
-              if(self._game.isGameOver()) {
-                clearInterval(loopInterval);
-                self._game.endGame(self._game.winner(), self.canvas, self.canvasContext)
-                return;
-              } else {
-                self.generateFixtures();
-                run = false;
-              }
-              return;
-            }, 1000);
-          }
-        }
-        if(this.hasBananaStopped(banana)) {
-          this._bananaRenderer.explode(banana);
-          run = "explosion";
-          this._game.switchTurn();
-          return;
-        }
+        this.checkGorillaCollision(banana, gorillas);
+        this.checkBananaCollision(banana);
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
-      } else if (run === "gorilladead") {
       } else if (run === "explosion") {
-        console.log("test")
         this._bananaRenderer.drawBanana(banana);
         setTimeout(function(){
           run = false;
@@ -145,6 +118,36 @@
         if(gotAngle) {
           this._updateDisplay.drawVelocity(velocity, this.textXCoord());
         }
+      }
+    },
+    checkGorillaCollision: function(banana, gorillas) {
+      for(var i = 0; i < 2; i++) {
+        if(this.isGorillaHit(banana, gorillas[i])) {
+          this._gorillaRenderer.kill(i)
+          run = "gorillaDead";
+          this._game.switchTurn();
+          this._game.updateScore(gorillas[i]);
+          var self = this;
+          setTimeout(function(){
+            if(self._game.isGameOver()) {
+              clearInterval(loopInterval);
+              self._game.endGame(self._game.winner(), self.canvas, self.canvasContext)
+              return;
+            } else {
+              self.generateFixtures();
+              run = false;
+            }
+            return;
+          }, 1000);
+        }
+      }
+    },
+    checkBananaCollision: function(banana) {
+      if(this.hasBananaStopped(banana)) {
+        this._bananaRenderer.explode(banana);
+        run = "explosion";
+        this._game.switchTurn();
+        return;
       }
     },
     drawEverything: function(gorillas) {
@@ -266,7 +269,7 @@
       else { gotPlayerOneName = true; }
     },
     textXCoord: function() {
-      return this._game.isPlayerOne() ? 10 : 1000;
+      return this._game.isPlayerOne() ? 10 : 900;
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||
