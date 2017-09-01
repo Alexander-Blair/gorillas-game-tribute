@@ -34,6 +34,7 @@
       var x = banana._xCoord - 20;
       var y = banana._yCoord - 20;
 
+      var self = this;
       var timer = setInterval(function() {
         if(i == 6) {
           clearInterval(timer);
