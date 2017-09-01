@@ -8,11 +8,11 @@ describe("Banana", function() {
 
   banana = new Banana(exampleXCoord, exampleYCoord)
 
-  it("has a default width of 20", function() {
-    expect(banana.width()).toEqual(20)
+  it("has a default width of 15", function() {
+    expect(banana.width()).toEqual(15);
   });
-  it("has a default height of 20", function() {
-    expect(banana.height()).toEqual(20)
+  it("has a default height of 15", function() {
+    expect(banana.height()).toEqual(15);
   });
   it("returns its x coordinate", function() {
     expect(banana.xCoord()).toEqual(exampleXCoord)

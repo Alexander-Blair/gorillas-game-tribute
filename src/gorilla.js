@@ -27,14 +27,29 @@
     isPlayerOne: function() {
       return this._isPlayerOne;
     },
-    chooseRandomTile: function(tileMap,
-                                     terrainUnitWidth,
-                                     terrainUnitHeight) {
+    chooseRandomTile: function(tileMap, terrainUnitWidth, terrainUnitHeight) {
       var min, max, column, tile, divider;
       divider = terrainUnitWidth / 16;
       column = chooseTile(this.getMax(divider), this.getMin(divider))
       tile = this.findTileHeight(tileMap, column, terrainUnitHeight) - 1;
+      if(this.invalidPosition(tileMap, tile, column)) {
+        return false;
+      }
       return [tile, column];
+    },
+    invalidPosition: function(tileMap, tile, column) {
+      if(this.isPlayerOne()) {
+        return tileMap[tile][column - 1] === 1 || tileMap[tile - 1][column + 1] === 1
+      } else {
+        return tileMap[tile][column + 1] === 1 || tileMap[tile - 1][column - 1] === 1
+      }
+    },
+    returnRandomTile: function(tileMap, terrainUnitWidth, terrainUnitHeight) {
+      var tile;
+      while(!tile) {
+        tile = this.chooseRandomTile(tileMap, terrainUnitWidth, terrainUnitHeight)
+      }
+      return tile;
     },
     findTileHeight: function(tileMap, column, terrainUnitHeight) {
       for(var i = 0; i < terrainUnitHeight; i++) {

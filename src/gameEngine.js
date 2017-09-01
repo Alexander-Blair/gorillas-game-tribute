@@ -52,7 +52,7 @@
 
       var self = this;
       for(var i = 0; i <= 1; i ++) {
-        var tile = this._gorillas[i].chooseRandomTile(terrainTileArray,
+        var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
                                                  terrainUnitWidth,
                                                  terrainUnitHeight);
         this._gorillas[i].set(toCoords(tile[1]), toCoords(tile[0]))
@@ -83,7 +83,8 @@
       var banana = this._banana;
       this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
-      this._gorillaRenderer.drawGorillas(gorillas);
+      this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
+      this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
       this.drawWind();
 
       if (run === true) {
@@ -176,20 +177,25 @@
     },
     drawVelocity: function() {
       this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.fillStyle = 'white';
       this.canvasContext.fillText("Velocity: " + velocity + "_", 10, 100);
     },
     drawAngle: function() {
       this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.fillStyle = 'white';
       var text = "Angle: " + angle;
       if(!gotAngle) { text += "_"; }
       this.canvasContext.fillText(text, 10, 50);
     },
     drawWind: function(terrainUnitWidth, terrainUnitHeight) {
-      this.canvasContext.font = "16px Arial";
-      this.canvasContext.fillStyle = 'yellow';
+      var width = this.canvasContext.measureText(this._wind.windArrow).width
+      this.canvasContext.fillStyle = 'white';
+      this.canvasContext.fillRect(this._wind.x, this._wind.y - 25, (width * 2), 30);
+      this.canvasContext.font = 'bold 20pt Futura';
+      this.canvasContext.fillStyle = 'black';
+      this.canvasContext.strokeStyle = 'white';
       this.canvasContext.fillText(this._wind.windArrow, this._wind.x, this._wind.y);
+      this.canvasContext.strokeText(this._wind.windArrow, this._wind.x, this._wind.y);
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||

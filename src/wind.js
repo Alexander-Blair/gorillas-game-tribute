@@ -15,7 +15,6 @@
     generateWindArrow: function(terrainUnitWidth, terrainUnitHeight) {
       var windArrow = "-".repeat(Math.floor((Math.abs(this.wind) * 100))) ;
       if(this.wind > 0) {
-        console.log(terrainUnitWidth)
         this.windArrow = windArrow + ">";
         this.x = (terrainUnitWidth * 50) / 2;
         this.y = (terrainUnitHeight * 48);
