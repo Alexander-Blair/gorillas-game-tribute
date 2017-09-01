@@ -98,6 +98,7 @@
     startGameLoop: function(angle, velocity) {
       this._banana.set(this._gorillas[1].xCoord() + 60, this._gorillas[1].yCoord());
       this.setVelocities(angle, velocity);
+      this._gorillaRenderer.throw();
       run = true;
       this.resetChoices();
     },
