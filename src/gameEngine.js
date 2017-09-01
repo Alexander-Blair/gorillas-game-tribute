@@ -71,13 +71,8 @@
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
-      this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
-      this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
-      this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
-      this.drawWind();
-      this.drawScore();
-      this.drawNames();
+
+      this.drawEverything(gorillas);
       if (run === true) {
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
@@ -107,6 +102,15 @@
           this.drawVelocity();
         }
       }
+    },
+    drawEverything: function(gorillas) {
+      this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
+      this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
+      this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
+      this.drawWind();
+      this.drawScore();
+      this.drawNames();
     },
     hasBananaStopped: function(banana) {
       return this._buildingCollisionDetector.isHit(banana, terrainTileArray) ||
