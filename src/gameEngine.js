@@ -43,22 +43,15 @@
 
   GameEngine.prototype = {
     initialize: function() {
-      this.generateLandscape();
-      this._wind.generateWind();
-      this._wind.generateWindArrow(terrainUnitWidth, terrainUnitHeight);
-
+      this.generateFixtures();
       var self = this;
-      for(var i = 0; i <= 1; i ++) {
-        var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
-                                                      terrainUnitWidth,
-                                                      terrainUnitHeight);
-        this._gorillas[i].set(toCoords(tile[1]), toCoords(tile[0]))
-      }
       loopInterval = setInterval(function(){self.gameLoop();}, 20);
     },
 
     generateFixtures: function() {
       this.generateLandscape();
+      this._wind.generateWind();
+      this._wind.generateWindArrow(terrainUnitWidth, terrainUnitHeight);
       for(var i = 0; i <= 1; i ++) {
         var tile = this._gorillas[i].returnRandomTile(terrainTileArray,
                                                       terrainUnitWidth,
@@ -83,7 +76,8 @@
       this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
       this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
       this.drawWind();
-
+      this.drawScore();
+      this.drawNames();
       if (run === true) {
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
@@ -188,14 +182,25 @@
     drawVelocity: function() {
       this.canvasContext.font = "16px Arial";
       this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText("Velocity: " + velocity + "_", this.textXCoord(), 100);
+      this.canvasContext.fillText("Velocity: " + velocity + "_", this.textXCoord(), 110);
     },
     drawAngle: function() {
       this.canvasContext.font = "16px Arial";
       this.canvasContext.fillStyle = 'white';
       var text = "Angle: " + angle;
       if(!gotAngle) { text += "_"; }
-      this.canvasContext.fillText(text, this.textXCoord(), 50);
+      this.canvasContext.fillText(text, this.textXCoord(), 70);
+    },
+    drawScore: function() {
+      this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'white';
+      this.canvasContext.fillText(this._game.score(), toCoords(terrainUnitWidth) / 2, 30);
+    },
+    drawNames: function() {
+      this.canvasContext.font = "16px Arial";
+      this.canvasContext.fillStyle = 'white';
+      this.canvasContext.fillText(this._game.player1.name(), 10, 30);
+      this.canvasContext.fillText(this._game.player2.name(), 1000, 30);
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;

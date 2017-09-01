@@ -15,7 +15,6 @@
   }
 
   Player.prototype.incrementScore = function() {
-    console.log(this)
     this._score += 1;
   }
 
