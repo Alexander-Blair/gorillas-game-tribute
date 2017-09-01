@@ -65,6 +65,7 @@
       loopInterval = setInterval(function(){ self.gameLoop(); }, 20);
     },
     generateFixtures: function() {
+      this._gorillaRenderer.reset();
       this.generateLandscape();
       this._wind.generateWind(terrainUnitWidth, terrainUnitHeight);
       for(var i = 0; i <= 1; i ++) {
@@ -101,24 +102,26 @@
       var banana = this._banana;
       var self = this;
 
-
       this.drawEverything(gorillas);
       if (run === true) {
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
-            run = false;
+            this._gorillaRenderer.kill(i)
+            run = "gorilladead";
             this._game.switchTurn();
             this._game.updateScore(gorillas[i]);
-            if(this._game.isGameOver()) {
-              clearInterval(loopInterval)
-              console.log('hello')
-              console.log(self)
-              this._game.endGame(this._game.winner(), this.canvas, this.canvasContext)
+            var self = this
+            setTimeout(function(){
+              if(self._game.isGameOver()) {
+                clearInterval(loopInterval);
+                self._game.endGame(self._game.winner(), self.canvas, self.canvasContext)
+                return;
+              } else {
+                self.generateFixtures();
+                run = false;
+              }
               return;
-            } else {
-              this.generateFixtures();
-            }
-            return;
+            }, 1000);
           }
         }
         if(this.hasBananaStopped(banana)) {
@@ -129,12 +132,13 @@
         }
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
+      } else if (run === "gorilladead") {
       } else if (run === "explosion") {
         this._bananaRenderer.drawBanana(banana);
         setTimeout(function(){
           run = false;
         }, 1000);
-      } else {
+      } else if (run === false){
         this.waitForInput();
         this._updateDisplay.drawAngle(angle, gotAngle, this.textXCoord());
         if(gotAngle) {

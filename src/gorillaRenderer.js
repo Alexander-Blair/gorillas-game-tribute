@@ -10,6 +10,26 @@
   var shift2 = 615;
 
   GorillaRenderer.prototype = {
+    reset: function() {
+      shift1 = 715;
+      shift2 = 615;
+    },
+    kill: function(gorillaNum) {
+      var frames = [317, 365, 415, 465, 515, 565];
+      var i = 0;
+
+      var timer = setInterval(function() {
+        if(i == 6) {
+          clearInterval(timer);
+         }
+        if(gorillaNum === 0) {
+          shift2 = frames[i];
+        } else {
+          shift1 = frames[i];
+        }
+        i ++;
+      }, 70);
+    },
     throw: function(isPlayerOne) {
       if(isPlayerOne) {
         shift2 = shift2 + 50;

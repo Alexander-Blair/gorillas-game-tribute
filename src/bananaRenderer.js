@@ -34,10 +34,8 @@
       var x = banana._xCoord - 20;
       var y = banana._yCoord - 20;
 
-      self = this;
       var timer = setInterval(function() {
         if(i == 6) {
-          self.reset();
           clearInterval(timer);
          }
         self.shift = frames[i];
