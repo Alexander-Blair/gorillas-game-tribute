@@ -69,6 +69,39 @@
       this.canvasContext.fillStyle = 'black';
       this.canvasContext.stroke();
       wind.drawArrow(this.canvasContext, wind.x, wind.y, (wind.x + wind.wind * 1000), wind.y);
+    },
+    drawEndGameScreen: function(winner, canvas, canvasContext, spriteSheet) {
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+      canvasContext.beginPath();
+      canvasContext.fillStyle = 'black';
+      canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+      canvasContext.fill();
+
+      canvasContext.beginPath();
+      canvasContext.drawImage(spriteSheet,
+                                  715,
+                                  0,
+                                  50,
+                                  50,
+                                  canvas.width / 2,
+                                  (canvas.height / 2) - 100,
+                                  50,
+                                  50);
+
+      canvasContext.fill();
+
+      canvasContext.beginPath();
+      canvasContext.fillStyle = 'white';
+      canvasContext.textAlign = 'center';
+      canvasContext.font = "40px 'Press Start 2P'"
+      canvasContext.fillText(winner.name() + " WON!", canvas.width / 2, canvas.height /2);
+      canvasContext.fill();
+
+      canvasContext.beginPath();
+      canvasContext.fillStyle = 'white';
+      canvasContext.textAlign = 'center';
+      canvasContext.font = "20px 'Press Start 2P'";
+      canvasContext.fillText("Go Bananas, " + winner.name() + "!", canvas.width / 2, (canvas.height /2 + 100));
     }
   }
 

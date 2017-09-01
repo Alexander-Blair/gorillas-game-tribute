@@ -113,7 +113,10 @@
             setTimeout(function(){
               if(self._game.isGameOver()) {
                 clearInterval(loopInterval);
-                self._game.endGame(self._game.winner(), self.canvas, self.canvasContext)
+                self._updateDisplay.drawEndGameScreen(self._game.winner(),
+                                                      self.canvas,
+                                                      self.canvasContext,
+                                                      self._game.spriteSheet);
                 return;
               } else {
                 self.generateFixtures();
@@ -142,28 +145,6 @@
         this._updateDisplay.drawAngle(angle, gotAngle, this.textXCoord());
         if(gotAngle) {
           this._updateDisplay.drawVelocity(velocity, this.textXCoord());
-        }
-      }
-    },
-    checkGorillaCollision: function(banana, gorillas) {
-      for(var i = 0; i < 2; i++) {
-        if(this.isGorillaHit(banana, gorillas[i])) {
-          this._gorillaRenderer.kill(i)
-          run = "gorillaDead";
-          this._game.switchTurn();
-          this._game.updateScore(gorillas[i]);
-          var self = this;
-          setTimeout(function(){
-            if(self._game.isGameOver()) {
-              clearInterval(loopInterval);
-              self._game.endGame(self._game.winner(), self.canvas, self.canvasContext)
-              return;
-            } else {
-              self.generateFixtures();
-              run = false;
-            }
-            return;
-          }, 1000);
         }
       }
     },
