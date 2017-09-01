@@ -107,8 +107,8 @@
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
             run = false;
-            this._game.switchTurn()
-            this._game.updateScore(gorillas[i])
+            this._game.switchTurn();
+            this._game.updateScore(gorillas[i]);
             if(this._game.isGameOver()) {
               clearInterval(loopInterval)
               console.log('hello')
@@ -116,18 +116,24 @@
               this._game.endGame(this._game.winner(), this.canvas, this.canvasContext)
               return;
             } else {
-              this.generateFixtures()
+              this.generateFixtures();
             }
             return;
           }
         }
         if(this.hasBananaStopped(banana)) {
-          this._game.switchTurn()
-          run = false;
+          this._bananaRenderer.explode(banana);
+          run = "explosion";
+          this._game.switchTurn();
           return;
         }
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
+      } else if (run === "explosion") {
+        this._bananaRenderer.drawBanana(banana);
+        setTimeout(function(){
+          run = false;
+        }, 1000);
       } else {
         this.waitForInput();
         this._updateDisplay.drawAngle(angle, gotAngle, this.textXCoord());
@@ -153,6 +159,7 @@
       return this._gorillaCollisionDetector.isHit(gorilla, banana);
     },
     startGameLoop: function(angle, velocity) {
+      this._bananaRenderer.reset();
       var xCoord, yCoord;
       if(this._game.isPlayerOne()) {
         xCoord = this._gorillas[0].xCoord() - 10
@@ -163,6 +170,7 @@
       }
       this._banana.set(xCoord, yCoord);
       this.setVelocities(angle, velocity);
+      this._gorillaRenderer.throw(this._game.isPlayerOne());
       run = true;
       this.resetChoices();
     },
