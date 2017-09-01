@@ -103,8 +103,33 @@
       var self = this;
       this.drawEverything(gorillas);
       if (run === true) {
-        this.checkGorillaCollision(banana, gorillas);
-        this.checkBananaCollision(banana);
+        for(var i = 0; i < 2; i++) {
+          if(this.isGorillaHit(banana, gorillas[i])) {
+            this._gorillaRenderer.kill(i)
+            run = "gorilladead";
+            this._game.switchTurn();
+            this._game.updateScore(gorillas[i]);
+            var self = this
+            setTimeout(function(){
+              if(self._game.isGameOver()) {
+                clearInterval(loopInterval);
+                self._game.endGame(self._game.winner(), self.canvas, self.canvasContext)
+                return;
+              } else {
+                self.generateFixtures();
+                run = false;
+              }
+              return;
+            }, 1400);
+          }
+        }
+        if(this.hasBananaStopped(banana)) {
+          this._bananaRenderer.explode(banana);
+          run = "explosion";
+          this._game.switchTurn();
+          return;
+        }
+
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
       } else if (run === "explosion") {

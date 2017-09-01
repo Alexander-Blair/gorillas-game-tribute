@@ -15,20 +15,23 @@
       shift2 = 615;
     },
     kill: function(gorillaNum) {
-      var frames = [317, 365, 415, 465, 515, 565];
+      var frames = [317, 365, 415, 415, 465, 465, 515, 515, 565, 565];
+      var celebrationframes = [115, 115, 115, 165, 165, 165, 115, 115, 115, 165];
       var i = 0;
 
       var timer = setInterval(function() {
-        if(i == 6) {
+        if(i == 10) {
           clearInterval(timer);
          }
         if(gorillaNum === 0) {
           shift2 = frames[i];
+          shift1 = celebrationframes[i];
         } else {
           shift1 = frames[i];
+          shift2 = celebrationframes[i];
         }
         i ++;
-      }, 70);
+      }, 120);
     },
     throw: function(isPlayerOne) {
       if(isPlayerOne) {
