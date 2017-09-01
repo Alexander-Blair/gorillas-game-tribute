@@ -60,14 +60,11 @@
       }
     },
     generateLandscape: function() {
-      var terrain;
-      terrain = this._terrainConstructor;
-      newTerrain = new terrain(terrainUnitWidth, terrainUnitHeight);
+      newTerrain = new this._terrainConstructor(terrainUnitWidth, terrainUnitHeight);
       newTerrain.generate();
       terrainTileArray = newTerrain.tileArray;
       terrainCoordArray = this._terrainRenderer.generateCoordArray(terrainTileArray);
     },
-    // THIS IS TO BE REFACTORED!!
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
@@ -108,7 +105,7 @@
       this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
       this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
       this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
-      this.drawWind();
+      this._updateDisplay.drawWind(this._wind);
       this._updateDisplay.drawScore(this._game.score(), toCoords(terrainUnitWidth) / 2);
       this._updateDisplay.drawNames(this._game.player1.name(), this._game.player2.name());
     },
@@ -185,20 +182,6 @@
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;
-    },
-    drawWind: function() {
-      var wind = this._wind;
-      this.canvasContext.fillStyle = 'white';
-      var arrowlength = (wind.wind * 1000);
-      if(wind.wind > 0) {
-        this.canvasContext.rect(wind.x - 10, wind.y - 15, arrowlength + 25, 30);
-      } else {
-        this.canvasContext.rect(wind.x + 10, wind.y - 15, arrowlength - 25, 30);
-      }
-      this.canvasContext.fill();
-      this.canvasContext.fillStyle = 'black';
-      this.canvasContext.stroke();
-      wind.drawArrow(this.canvasContext, wind.x, wind.y, (wind.x + wind.wind * 1000), wind.y);
     },
     offScreen: function() {
       if(this._banana.yCoord() > (terrainUnitHeight * 50) ||
