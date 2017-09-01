@@ -15,10 +15,6 @@
     this._isPlayerOne = !this._isPlayerOne;
   }
 
-  Game.prototype.endGame = function() {
-    // Game Over screen?
-  }
-
   Game.prototype.score = function() {
     return this.player1.score() + ':' + this.player2.score();
   }
@@ -37,17 +33,23 @@
 
   Game.prototype.updateScore = function(gorilla) {
     if(this.player1.gorilla === gorilla) {
-      console.log('why u here')
+
       this.player2.incrementScore();
     } else {
-      console.log('success')
+
       this.player1.incrementScore();
     }
-    if(this.isGameOver()) {
-      this.endGame();
-    } else {
-      this.newRound();
-    }
+  }
+
+  Game.prototype.endGame = function(winner, canvas, canvasContext) {
+
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    canvasContext.beginPath();
+    canvasContext.fillStyle = 'white';
+    canvasContext.textAlign = 'center';
+    canvasContext.font = "40px 'Press Start 2P'"
+    canvasContext.fillText(winner.name() + " WON!", 600, 400);
+    canvasContext.fill();
   }
 
   exports.Game = Game;

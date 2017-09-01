@@ -72,6 +72,8 @@
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
+      var self = this;
+
 
       this.drawEverything(gorillas);
       if (run === true) {
@@ -81,7 +83,10 @@
             this._game.switchTurn()
             this._game.updateScore(gorillas[i])
             if(this._game.isGameOver()) {
-              this.endGame(this._game.winner())
+              clearInterval(loopInterval)
+              console.log('hello')
+              console.log(self)
+              this._game.endGame(this._game.winner(), this.canvas, this.canvasContext)
               return;
             } else {
               this.generateFixtures()
@@ -231,12 +236,12 @@
         return true;
       }
     },
-    endGame: function(winner) {
-      clearInterval(loopInterval)
-      this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.canvasContext.fillStyle = 'white';
-      this.canvasContext.fillText(winner.name() + " WON!", 100, 100);
-    }
+    // endGame: function(winner) {
+    //   clearInterval(loopInterval)
+    //   this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    //   this.canvasContext.fillStyle = 'white';
+    //   this.canvasContext.fillText(winner.name() + " WON!", 100, 100);
+    // }
   };
 
   function toCoords(value) {
