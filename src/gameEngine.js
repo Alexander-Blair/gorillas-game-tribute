@@ -1,8 +1,8 @@
 (function(exports) {
   'use strict';
 
-  var intro, gotPlayerOneName;
-  var playerOneName, playerTwoName;
+  var intro, gotPlayerOneName, gotPlayerTwoName;
+  var playerOneName, playerTwoName, bestOf;
   var run, dx, dy, gravity, gotAngle, velocity, angle, wind, airResistance;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray, terrainTileArray;
@@ -10,8 +10,10 @@
 
   intro = true;
   gotPlayerOneName = false;
+  gotPlayerTwoName = false;
   playerOneName = '';
   playerTwoName = '';
+  bestOf = '';
 
   run = false;
   airResistance = 0;
@@ -57,6 +59,7 @@
     initialize: function() {
       if(playerOneName.length > 0) { this._game.player1.setName(playerOneName); }
       if(playerTwoName.length > 0) { this._game.player2.setName(playerTwoName); }
+      if(bestOf.length > 0) { this._game.setBestOf(bestOf); }
       this.generateFixtures();
       var self = this;
       loopInterval = setInterval(function(){ self.gameLoop(); }, 20);
@@ -89,7 +92,9 @@
                                           xCoord,
                                           playerOneName,
                                           playerTwoName,
-                                          gotPlayerOneName)
+                                          gotPlayerOneName,
+                                          gotPlayerTwoName,
+                                          bestOf)
     },
     gameLoop: function() {
       var gorillas = this._gorillas;
@@ -129,16 +134,6 @@
         if(gotAngle) {
           this._updateDisplay.drawVelocity(velocity, this.textXCoord());
         }
-      }
-    },
-    processGorillaCollision: function(banana, gorilla) {
-      run = false;
-      this._game.switchTurn()
-      this._game.updateScore(gorilla)
-      if(this._game.isGameOver()) {
-        this.endGame(this._game.winner())
-      } else {
-        this.generateFixtures()
       }
     },
     drawEverything: function(gorillas) {
@@ -197,11 +192,18 @@
       airResistance += this._wind.wind;
     },
     processNumber: function(key) {
-      if(gotAngle) { velocity += key; }
-      else { angle += key; }
+      if(intro) {
+        if(gotPlayerTwoName) {
+          bestOf += key;
+        }
+      } else {
+        if(gotAngle) { velocity += key; }
+        else { angle += key; }
+      }
     },
     processLetter: function(key) {
       if(intro) {
+        if(gotPlayerTwoName) { return; }
         if(gotPlayerOneName) { playerTwoName += key; }
         else { playerOneName += key; }
       }
@@ -228,11 +230,9 @@
       }
     },
     processIntroBackspace: function() {
-      if(gotPlayerOneName) {
-        playerTwoName = this.deleteLastChar(playerTwoName)
-      } else {
-        playerOneName = this.deleteLastChar(playerOneName)
-      }
+      if(gotPlayerTwoName) { bestOf = this.deleteLastChar(bestOf); }
+      else if(gotPlayerOneName) { playerTwoName = this.deleteLastChar(playerTwoName) }
+      else { playerOneName = this.deleteLastChar(playerOneName) }
     },
     deleteLastChar: function(item) {
       return item.substring(0, item.length - 1);
@@ -248,9 +248,9 @@
       }
     },
     processIntroEnter: function() {
-      if(gotPlayerOneName) {
-        intro = false;
-      } else { gotPlayerOneName = true; }
+      if(gotPlayerTwoName) { intro = false; }
+      else if(gotPlayerOneName) { gotPlayerTwoName = true; }
+      else { gotPlayerOneName = true; }
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 1000;
@@ -262,12 +262,6 @@
         return true;
       }
     },
-    // endGame: function(winner) {
-    //   clearInterval(loopInterval)
-    //   this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    //   this.canvasContext.fillStyle = 'white';
-    //   this.canvasContext.fillText(winner.name() + " WON!", 100, 100);
-    // }
   };
 
   function toCoords(value) {
