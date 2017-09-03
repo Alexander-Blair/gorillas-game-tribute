@@ -4,14 +4,19 @@
   var width = 15;
   var height = 15;
 
-  function Banana(xCoord, yCoord) {
-    this._xCoord = xCoord;
-    this._yCoord = yCoord;
+  function Banana() {
+    this._xCoord = 0;
+    this._yCoord = 0;
     this._width = width;
     this._height = height;
   }
 
   Banana.prototype = {
+    offScreen: function(terrainUnitHeight, terrainUnitWidth) {
+      return this.yCoord() > terrainUnitHeight ||
+             this.xCoord() + this.width() < 0 ||
+             this.xCoord() > terrainUnitWidth;
+    },
     set: function(xCoord, yCoord) {
       this._xCoord = xCoord;
       this._yCoord = yCoord;
@@ -32,10 +37,10 @@
     height: function() {
       return this._height;
     },
-    bLeft: function() {
+    bottomLeft: function() {
       return [this.xCoord(), (this.yCoord() + this.height())];
     },
-    bRight: function() {
+    bottomRight: function() {
       return [(this.xCoord() + this.width()), (this.yCoord() + this.height())];
     }
   };

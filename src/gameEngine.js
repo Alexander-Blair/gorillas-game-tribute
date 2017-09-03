@@ -1,27 +1,18 @@
 (function(exports) {
   'use strict';
 
-  var intro, gotPlayerOneName, gotPlayerTwoName;
-  var playerOneName, playerTwoName, bestOf;
-  var run, dx, dy, gravity, gotAngle, velocity, angle, wind, airResistance;
+  var run, dx, dy, gravity, wind, airResistance;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray, terrainTileArray;
   var loopInterval, introInterval;
 
-  intro = true;
-  gotPlayerOneName = false;
-  gotPlayerTwoName = false;
-  playerOneName = '';
-  playerTwoName = '';
-  bestOf = '';
-
   run = false;
   airResistance = 0;
+  dx = 0;
+  dy = 0;
+  gravity = 0;
   terrainUnitWidth = 24;
   terrainUnitHeight = 16;
-  gotAngle = false;
-  velocity = '';
-  angle = '';
 
   function GameEngine(canvas,
                       canvasContext,
@@ -35,7 +26,8 @@
                       terrainConstructor,
                       game,
                       wind,
-                      updateDisplay) {
+                      updateDisplay,
+                      userInputProcessor) {
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
@@ -49,6 +41,7 @@
     this._game = game;
     this._wind = wind;
     this._updateDisplay = updateDisplay;
+    this._userInputProcessor = userInputProcessor
   }
 
   GameEngine.prototype = {
@@ -56,13 +49,30 @@
       var self = this;
       introInterval = setInterval(function(){ self.introLoop(); }, 20);
     },
+    introLoop: function() {
+      if(this._userInputProcessor.introComplete) {
+        clearInterval(introInterval)
+        this.initialize();
+        return;
+      }
+      var xCoord = toCoords(terrainUnitWidth) / 2;
+      this._updateDisplay.drawIntroScreen(this.canvas,
+                                          xCoord,
+                                          this._userInputProcessor.playerOneName,
+                                          this._userInputProcessor.playerTwoName,
+                                          this._userInputProcessor.gotPlayerOneName,
+                                          this._userInputProcessor.gotPlayerTwoName,
+                                          this._userInputProcessor.bestOf())
+    },
     initialize: function() {
-      if(playerOneName.length > 0) { this._game.player1.setName(playerOneName); }
-      if(playerTwoName.length > 0) { this._game.player2.setName(playerTwoName); }
-      if(bestOf.length > 0) { this._game.setBestOf(bestOf); }
+      if(this._userInputProcessor.playerOneName.length > 0) {
+        this._game.player1.setName(this._userInputProcessor.playerOneName); }
+      if(this._userInputProcessor.playerTwoName.length > 0) {
+        this._game.player2.setName(this._userInputProcessor.playerTwoName); }
+      if(this._userInputProcessor.bestOf().length > 0) { this._game.setBestOf(this._userInputProcessor.bestOf()); }
       this.generateFixtures();
       var self = this;
-      loopInterval = setInterval(function(){ self.gameLoop(); }, 20);
+      loopInterval = setInterval(function() { self.gameLoop(); }, 20);
     },
     generateFixtures: function() {
       this._gorillaRenderer.reset();
@@ -82,31 +92,16 @@
       terrainCoordArray = this._terrainRenderer.generateCoordArray(terrainTileArray);
     },
 
-    introLoop: function() {
-      if(!intro) {
-        clearInterval(introInterval)
-        this.initialize();
-        return;
-      }
-      var xCoord = toCoords(terrainUnitWidth) / 2;
-      this._updateDisplay.drawIntroScreen(this.canvas,
-                                          xCoord,
-                                          playerOneName,
-                                          playerTwoName,
-                                          gotPlayerOneName,
-                                          gotPlayerTwoName,
-                                          bestOf)
-    },
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
       var self = this;
       this.drawEverything(gorillas);
-      if (run === true) {
+      if (this.gameStatus() === "throw") {
         for(var i = 0; i < 2; i++) {
           if(this.isGorillaHit(banana, gorillas[i])) {
             this._gorillaRenderer.kill(i)
-            run = "gorilladead";
+            this.updateStatus("gorillaExplode");
             this._game.switchTurn();
             this._game.updateScore(gorillas[i]);
             var self = this
@@ -120,7 +115,7 @@
                 return;
               } else {
                 self.generateFixtures();
-                run = false;
+                self.updateStatus("waiting");
               }
               return;
             }, 1400);
@@ -128,30 +123,40 @@
         }
         if(this.hasBananaStopped(banana)) {
           this._bananaRenderer.explode(banana);
-          run = "explosion";
+          this.updateStatus("bananaExplode");
           this._game.switchTurn();
           return;
         }
-
         this.moveBanana();
         this._bananaRenderer.drawBanana(banana);
-      } else if (run === "explosion") {
+      } else if (this.gameStatus() === "bananaExplode") {
         this._bananaRenderer.drawBanana(banana);
+        var self = this;
         setTimeout(function(){
-          run = false;
+          self.updateStatus("waiting")
         }, 1000);
-      } else if (run === false){
+      } else if (this.gameStatus() === "waiting") {
         this.waitForInput();
-        this._updateDisplay.drawAngle(angle, gotAngle, this.textXCoord());
-        if(gotAngle) {
-          this._updateDisplay.drawVelocity(velocity, this.textXCoord());
+        this._updateDisplay.drawAngle(this._userInputProcessor.angle, this._userInputProcessor.gotAngle, this.textXCoord());
+        if(this._userInputProcessor.gotAngle) {
+          this._updateDisplay.drawVelocity(this._userInputProcessor.velocity, this.textXCoord());
         }
       }
+      if(this.gameStatus() === "readyToThrow") {
+        this.startGameLoop(this._userInputProcessor.angle, this._userInputProcessor.velocity);
+        this.updateStatus("throw");
+      }
+    },
+    updateStatus: function(status) {
+      this._userInputProcessor.updateStatus(status)
+    },
+    gameStatus: function() {
+      return this._userInputProcessor.gameStatus();
     },
     checkBananaCollision: function(banana) {
       if(this.hasBananaStopped(banana)) {
         this._bananaRenderer.explode(banana);
-        run = "explosion";
+        this.updateStatus("bananaExplode");
         this._game.switchTurn();
         return;
       }
@@ -167,7 +172,8 @@
     },
     hasBananaStopped: function(banana) {
       return this._buildingCollisionDetector.isHit(banana, terrainTileArray) ||
-             this.offScreen();
+             this._banana.offScreen(toCoords(terrainUnitHeight),
+                                    toCoords(terrainUnitWidth));
     },
     isGorillaHit: function(banana, gorilla) {
       return this._gorillaCollisionDetector.isHit(gorilla, banana);
@@ -185,20 +191,16 @@
       this._banana.set(xCoord, yCoord);
       this.setVelocities(angle, velocity);
       this._gorillaRenderer.throw(this._game.isPlayerOne());
-      run = true;
-      this.resetChoices();
-    },
-    resetChoices: function() {
-      gotAngle = false;
-      angle = ''; velocity = '';
+      this.updateStatus("throw");
+      this._userInputProcessor.resetChoices();
     },
     waitForInput: function() {
       dx = 0; dy = 0;
     },
     setVelocities: function(angle, velocity) {
       if(!this._game.isPlayerOne()) { angle = 180 - angle; }
-      dx = velocity / 5 * Math.cos(angle * (Math.PI / 180));
-      dy = -velocity / 5 * Math.sin(angle * (Math.PI / 180));
+      dx = velocity / 4 * Math.cos(angle * (Math.PI / 180));
+      dy = -velocity / 4 * Math.sin(angle * (Math.PI / 180));
       this.resetAirResistanceAndGravity();
     },
     moveBanana: function() {
@@ -213,77 +215,9 @@
       gravity += 0.4;
       airResistance += this._wind.wind;
     },
-    processNumber: function(key) {
-      if(intro) {
-        if(gotPlayerTwoName) {
-          bestOf += key;
-        }
-      } else {
-        if(gotAngle) { velocity += key; }
-        else { angle += key; }
-      }
-    },
-    processLetter: function(key) {
-      if(intro) {
-        if(gotPlayerTwoName) { return; }
-        if(gotPlayerOneName) { playerTwoName += key; }
-        else { playerOneName += key; }
-      }
-    },
-    processMiscKey: function(keyCode) {
-      if(keyCode === 13) {
-        this.processEnter();
-      } else if(keyCode === 8) {
-        this.processBackspace();
-      }
-    },
-    processBackspace: function() {
-      if(intro) {
-        this.processIntroBackspace();
-      } else {
-        this.processGameBackSpace();
-      }
-    },
-    processGameBackSpace: function() {
-      if(gotAngle) {
-        velocity = this.deleteLastChar(velocity)
-      } else {
-        angle = this.deleteLastChar(angle)
-      }
-    },
-    processIntroBackspace: function() {
-      if(gotPlayerTwoName) { bestOf = this.deleteLastChar(bestOf); }
-      else if(gotPlayerOneName) { playerTwoName = this.deleteLastChar(playerTwoName) }
-      else { playerOneName = this.deleteLastChar(playerOneName) }
-    },
-    deleteLastChar: function(item) {
-      return item.substring(0, item.length - 1);
-    },
-    processEnter: function() {
-      intro ? this.processIntroEnter() : this.processGameEnter();
-    },
-    processGameEnter: function() {
-      if(gotAngle && velocity.length > 0) {
-        this.startGameLoop(angle, velocity);
-      } else if(!gotAngle && angle.length > 0) {
-        gotAngle = true;
-      }
-    },
-    processIntroEnter: function() {
-      if(gotPlayerTwoName) { intro = false; }
-      else if(gotPlayerOneName) { gotPlayerTwoName = true; }
-      else { gotPlayerOneName = true; }
-    },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 900;
-    },
-    offScreen: function() {
-      if(this._banana.yCoord() > (terrainUnitHeight * 50) ||
-        this._banana.xCoord() + this._banana.width() < 0 ||
-        this._banana.xCoord() > (terrainUnitWidth * 50)) {
-        return true;
-      }
-    },
+    }
   };
 
   function toCoords(value) {

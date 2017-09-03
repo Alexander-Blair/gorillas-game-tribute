@@ -8,9 +8,8 @@
   CollisionDetector.prototype = {
     isHit: function(banana, tileMap) {
       if(banana.yCoord() < 0) { return; }
-      var leftIndex  = this.convertCoords(banana.bLeft());
-      var rightIndex = this.convertCoords(banana.bRight());
-
+      var leftIndex  = this.convertCoords(banana.bottomLeft());
+      var rightIndex = this.convertCoords(banana.bottomRight());
       var leftTile   = tileMap[leftIndex[0]][leftIndex[1]];
       var rightTile  = tileMap[rightIndex[0]][rightIndex[1]];
 

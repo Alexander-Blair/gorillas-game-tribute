@@ -10,17 +10,20 @@
     setupKeystrokeListener: function() {
       var self = this;
       this.windowObject.addEventListener("keydown", function(event) {
-        self.delegateKeyStroke(event.which);
+        self.delegateKeyStroke(event.which, event.shiftKey);
       });
     },
-    delegateKeyStroke: function(eventCode) {
+    delegateKeyStroke: function(eventCode, shiftDown) {
+      var processor = this._gameEngine._userInputProcessor;
       var key = String.fromCharCode(eventCode);
       if(inRange(eventCode, keyRanges.numberKeys)) {
-        this._gameEngine.processNumber(key);
-      } else if(inRange(eventCode, keyRanges.letterKeys)) {
-        this._gameEngine.processLetter(key);
+        processor.processNumber(key);
+      } else if(inRange(eventCode, keyRanges.upperLetterKeys) ||
+                inRange(eventCode, keyRanges.lowerLetterKeys)) {
+                  if(!shiftDown) { key = String.fromCharCode(eventCode + 32); }
+                  processor.processLetter(key);
       } else if(inRange(eventCode, keyRanges.miscKeys)) {
-        this._gameEngine.processMiscKey(eventCode);
+        processor.processMiscKey(eventCode);
       }
     },
     initializeGameEngine: function() {

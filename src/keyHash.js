@@ -9,13 +9,18 @@
     "min": 48,
     "max": 57,
   };
-  var letterKeyRange = {
+  var upperLetterKeyRange = {
     "min": 65,
+    "max": 90,
+  };
+  var lowerLetterKeyRange = {
+    "min": 97,
     "max": 122,
   };
   exports.keyRanges = {
     "miscKeys": miscKeyRange,
     "numberKeys": numberKeyRange,
-    "letterKeys": letterKeyRange
+    "upperLetterKeys": upperLetterKeyRange,
+    "lowerLetterKeys": lowerLetterKeyRange
   };
 })(this);
