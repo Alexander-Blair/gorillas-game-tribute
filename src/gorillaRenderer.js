@@ -35,27 +35,20 @@
     },
     throw: function(isPlayerOne) {
       if(isPlayerOne) {
-        shift2 = shift2 + 50;
-        setTimeout(function(){ shift2 = shift2 - 50; }, 100);
+        shift2 += 50;
+        setTimeout(function(){ shift2 -= 50; }, 100);
       } else {
-        shift1 = shift1 + 50;
-        setTimeout(function(){ shift1 = shift1 - 50; }, 100);
+        shift1 += 50;
+        setTimeout(function(){ shift1 -= 50; }, 100);
       }
     },
-    drawGorilla1: function(x, y) {
-      this.canvasContext.drawImage(this.spriteSheet,
-                                  shift1,
-                                  0,
-                                  50,
-                                  50,
-                                  x,
-                                  y,
-                                  50,
-                                  50);
+    drawGorillas: function(gorillas) {
+      this.drawGorilla(gorillas[0].xCoord(), gorillas[0].yCoord(), shift2)
+      this.drawGorilla(gorillas[1].xCoord(), gorillas[1].yCoord(), shift1)
     },
-    drawGorilla2: function(x, y) {
+    drawGorilla: function(x, y, shift) {
       this.canvasContext.drawImage(this.spriteSheet,
-                                  shift2,
+                                  shift,
                                   0,
                                   50,
                                   50,

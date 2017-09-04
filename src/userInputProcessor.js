@@ -26,7 +26,7 @@
     processNumber: function(key) {
       if(!this.introComplete) {
         if(this.gotPlayerTwoName) {
-          this.append('bestOf', key)
+          this.append('_bestOf', key)
         }
       } else {
         if(this.gotAngle) { this.append('velocity', key); }
@@ -91,7 +91,7 @@
       }
     },
     processIntroBackspace: function() {
-      if(this.gotPlayerTwoName) { this.deleteLastChar('bestOf'); }
+      if(this.gotPlayerTwoName) { this.deleteLastChar('_bestOf'); }
       else if(this.gotPlayerOneName) {
         this.deleteLastChar('playerTwoName')
       }

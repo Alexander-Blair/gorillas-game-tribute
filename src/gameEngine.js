@@ -1,16 +1,10 @@
 (function(exports) {
   'use strict';
 
-  var run, dx, dy, gravity, wind, airResistance;
   var terrainUnitWidth, terrainUnitHeight;
   var newTerrain, terrainCoordArray, terrainTileArray;
   var loopInterval, introInterval;
 
-  run = false;
-  airResistance = 0;
-  dx = 0;
-  dy = 0;
-  gravity = 0;
   terrainUnitWidth = 24;
   terrainUnitHeight = 16;
 
@@ -27,7 +21,8 @@
                       game,
                       wind,
                       updateDisplay,
-                      userInputProcessor) {
+                      userInputProcessor,
+                      bananaMotion) {
     this.canvas = canvas;
     this.canvasContext = canvasContext;
     this._banana = banana;
@@ -41,7 +36,8 @@
     this._game = game;
     this._wind = wind;
     this._updateDisplay = updateDisplay;
-    this._userInputProcessor = userInputProcessor
+    this._userInputProcessor = userInputProcessor;
+    this._bananaMotion = bananaMotion;
   }
 
   GameEngine.prototype = {
@@ -91,60 +87,86 @@
       terrainTileArray = newTerrain.tileArray;
       terrainCoordArray = this._terrainRenderer.generateCoordArray(terrainTileArray);
     },
-
     gameLoop: function() {
       var gorillas = this._gorillas;
       var banana = this._banana;
-      var self = this;
       this.drawEverything(gorillas);
       if (this.gameStatus() === "throw") {
-        for(var i = 0; i < 2; i++) {
-          if(this.isGorillaHit(banana, gorillas[i])) {
-            this._gorillaRenderer.kill(i)
-            this.updateStatus("gorillaExplode");
-            this._game.switchTurn();
-            this._game.updateScore(gorillas[i]);
-            var self = this
-            setTimeout(function(){
-              if(self._game.isGameOver()) {
-                clearInterval(loopInterval);
-                self._updateDisplay.drawEndGameScreen(self._game.winner(),
-                                                      self.canvas,
-                                                      self.canvasContext,
-                                                      self._game.spriteSheet);
-                return;
-              } else {
-                self.generateFixtures();
-                self.updateStatus("waiting");
-              }
-              return;
-            }, 1400);
-          }
-        }
-        if(this.hasBananaStopped(banana)) {
-          this._bananaRenderer.explode(banana);
-          this.updateStatus("bananaExplode");
-          this._game.switchTurn();
-          return;
-        }
-        this.moveBanana();
+        if(this.checkGorillaCollision() || this.checkBananaCollision()) { return; }
+        this._bananaMotion.moveBanana();
         this._bananaRenderer.drawBanana(banana);
       } else if (this.gameStatus() === "bananaExplode") {
-        this._bananaRenderer.drawBanana(banana);
-        var self = this;
-        setTimeout(function(){
-          self.updateStatus("waiting")
-        }, 1000);
+        this.explodeBanana(banana);
       } else if (this.gameStatus() === "waiting") {
-        this.waitForInput();
-        this._updateDisplay.drawAngle(this._userInputProcessor.angle, this._userInputProcessor.gotAngle, this.textXCoord());
-        if(this._userInputProcessor.gotAngle) {
-          this._updateDisplay.drawVelocity(this._userInputProcessor.velocity, this.textXCoord());
-        }
+        this.processWaitScreen();
       }
       if(this.gameStatus() === "readyToThrow") {
-        this.startGameLoop(this._userInputProcessor.angle, this._userInputProcessor.velocity);
-        this.updateStatus("throw");
+        this.restartGameLoop(this._userInputProcessor.angle, this._userInputProcessor.velocity);
+      }
+    },
+    drawEverything: function(gorillas) {
+      this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
+      this._gorillaRenderer.drawGorillas(gorillas)
+      this._updateDisplay.drawWind(this._wind);
+      this._updateDisplay.drawScore(this._game.score(), toCoords(terrainUnitWidth) / 2);
+      this._updateDisplay.drawNames(this._game.player1.name(), this._game.player2.name());
+    },
+    checkGorillaCollision: function() {
+      for(var i = 0; i < 2; i++) {
+        if(this.isGorillaHit(this._banana, this._gorillas[i])) {
+          this.processGorillaCollision(this._gorillas[i]);
+          var self = this;
+          setTimeout(function(){
+            self.endRound();
+            return true;
+          }, 1400);
+        }
+      }
+    },
+    checkBananaCollision: function() {
+      if(this.hasBananaStopped(this._banana)) {
+        this._bananaRenderer.explode(this._banana);
+        this.updateStatus("bananaExplode");
+        this._game.switchTurn();
+        return true;
+      }
+    },
+    explodeBanana: function(banana) {
+      this._bananaRenderer.drawBanana(banana);
+      var self = this;
+      setTimeout(function(){
+        self.updateStatus("waiting");
+      }, 1000);
+    },
+    processGorillaCollision: function(gorilla) {
+      var gorillaNum = gorilla.isPlayerOne() ? 0 : 1;
+      this._gorillaRenderer.kill(gorillaNum);
+      this.updateStatus("gorillaExplode");
+      this._game.switchTurn();
+      this._game.updateScore(gorilla);
+    },
+    endRound: function() {
+      if(this._game.isGameOver()) { this.endGame() }
+      else {
+        this.generateFixtures();
+        this.updateStatus("waiting");
+      }
+    },
+    endGame: function() {
+      clearInterval(loopInterval);
+      this._updateDisplay.drawEndGameScreen(this._game.winner(),
+                                            this.canvas,
+                                            this.canvasContext,
+                                            this._game.spriteSheet);
+    },
+    processWaitScreen: function() {
+      this._bananaMotion.waitForInput();
+      this._updateDisplay.drawAngle(this._userInputProcessor.angle,
+                                    this._userInputProcessor.gotAngle,
+                                    this.textXCoord());
+      if(this._userInputProcessor.gotAngle) {
+        this._updateDisplay.drawVelocity(this._userInputProcessor.velocity, this.textXCoord());
       }
     },
     updateStatus: function(status) {
@@ -152,23 +174,6 @@
     },
     gameStatus: function() {
       return this._userInputProcessor.gameStatus();
-    },
-    checkBananaCollision: function(banana) {
-      if(this.hasBananaStopped(banana)) {
-        this._bananaRenderer.explode(banana);
-        this.updateStatus("bananaExplode");
-        this._game.switchTurn();
-        return;
-      }
-    },
-    drawEverything: function(gorillas) {
-      this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this._terrainRenderer.fillBlocks(terrainCoordArray, newTerrain.colourArray);
-      this._gorillaRenderer.drawGorilla1(gorillas[1].xCoord(), gorillas[1].yCoord());
-      this._gorillaRenderer.drawGorilla2(gorillas[0].xCoord(), gorillas[0].yCoord());
-      this._updateDisplay.drawWind(this._wind);
-      this._updateDisplay.drawScore(this._game.score(), toCoords(terrainUnitWidth) / 2);
-      this._updateDisplay.drawNames(this._game.player1.name(), this._game.player2.name());
     },
     hasBananaStopped: function(banana) {
       return this._buildingCollisionDetector.isHit(banana, terrainTileArray) ||
@@ -178,8 +183,7 @@
     isGorillaHit: function(banana, gorilla) {
       return this._gorillaCollisionDetector.isHit(gorilla, banana);
     },
-    startGameLoop: function(angle, velocity) {
-      this._bananaRenderer.reset();
+    restartGameLoop: function(angle, velocity) {
       var xCoord, yCoord;
       if(this._game.isPlayerOne()) {
         xCoord = this._gorillas[0].xCoord() - 10
@@ -188,32 +192,12 @@
         xCoord = this._gorillas[1].xCoord() + 50
         yCoord = this._gorillas[1].yCoord() - 10
       }
+      this._bananaRenderer.reset();
       this._banana.set(xCoord, yCoord);
-      this.setVelocities(angle, velocity);
+      this._bananaMotion.setVelocities(angle, velocity, this._game.isPlayerOne());
       this._gorillaRenderer.throw(this._game.isPlayerOne());
       this.updateStatus("throw");
       this._userInputProcessor.resetChoices();
-    },
-    waitForInput: function() {
-      dx = 0; dy = 0;
-    },
-    setVelocities: function(angle, velocity) {
-      if(!this._game.isPlayerOne()) { angle = 180 - angle; }
-      dx = velocity / 4 * Math.cos(angle * (Math.PI / 180));
-      dy = -velocity / 4 * Math.sin(angle * (Math.PI / 180));
-      this.resetAirResistanceAndGravity();
-    },
-    moveBanana: function() {
-      this._banana.move(dx + airResistance, dy + gravity);
-      this.incrementAirResistanceAndGravity()
-    },
-    resetAirResistanceAndGravity: function() {
-      gravity = 0;
-      airResistance = 0;
-    },
-    incrementAirResistanceAndGravity: function() {
-      gravity += 0.4;
-      airResistance += this._wind.wind;
     },
     textXCoord: function() {
       return this._game.isPlayerOne() ? 10 : 900;
