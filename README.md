@@ -1,5 +1,5 @@
 # gorillas-game-tribute
-### [(Play now on Heroku)](gorillas-tribute.herokuapp.com)
+### [(Play now on Heroku)](http://gorillas-tribute.herokuapp.com)
 
 A javascript remake of the QBasic game [Gorillas](https://en.wikipedia.org/wiki/Gorillas_(video_game)).
 
